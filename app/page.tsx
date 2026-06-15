@@ -342,7 +342,6 @@ export default function Home() {
             Contact LIC Printing Shop
           </a>
         </div>
-        </div>
       </div>
     </main>
   );
