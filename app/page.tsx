@@ -153,194 +153,247 @@ export default function Home() {
   }, [lastQuery, matches.length]);
 
   const currentIndex = result ? getCurrentIndex(result.currentList) : -1;
-
-  const orderComplete = result?.currentStatus
-    ?.toUpperCase()
-    .includes("READY FOR RELEASE");
-
+  const orderComplete = result?.currentStatus?.toUpperCase().includes("READY FOR RELEASE");
   const branchNumber = result ? getBranchNumber(result.cardName) : "";
   const reference = result ? getShortReference(result.cardName) : "";
 
   return (
-    <main className="min-h-screen bg-[#5B3A29] flex items-center justify-center px-4 py-8">
-      <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-2xl w-full max-w-xl border-t-8 border-[#D4AF37]">
-        <div className="text-center">
-          <Image
-            src="/lic-logo.jpg"
-            alt="LIC Printing Shop Logo"
-            width={150}
-            height={85}
-            className="mx-auto mb-4 rounded"
-            priority
-          />
-
-          <h1 className="text-2xl sm:text-3xl font-bold text-[#5B3A29]">
-            LIC Printing Shop
-          </h1>
-
-          <p className="text-[#D4AF37] font-semibold mt-2 text-sm">
-            BIR Receipt & Invoice Order Tracker
-          </p>
-
-          <p className="text-gray-500 mt-2 text-xs">
-            Track your order using your trade name, business name, or branch number.
-          </p>
-        </div>
-
-        <input
-          type="text"
-          placeholder="Search Trade Name, Business Name, or Branch Number"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") trackOrder();
-          }}
-          className="w-full border border-gray-300 rounded-lg p-3 mt-6 text-base focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
-        />
-
-        <button
-          onClick={() => trackOrder()}
-          className="w-full mt-4 bg-black text-white p-3 rounded-lg text-base font-semibold hover:bg-[#5B3A29] transition"
-        >
-          {loading ? "Searching..." : "Track Order"}
-        </button>
-
-        {error && (
-          <p className="text-red-600 text-center mt-4 text-sm">{error}</p>
-        )}
-
-        {matches.length > 0 && (
-          <div className="mt-6 border-t pt-6">
-            <p className="text-sm text-gray-600 font-medium">
-              Multiple orders found. Please select the correct order:
-            </p>
-
-            <div className="mt-4 space-y-3">
-              {matches.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => selectOrder(item.id)}
-                  className="w-full text-left border border-gray-300 rounded-lg p-3 hover:bg-[#FFF8E1] hover:border-[#D4AF37] transition"
-                >
-                  <p className="font-bold text-[#5B3A29]">
-                    {item.customerName}
-                  </p>
-                  <p className="text-xs text-gray-500 mt-1">
-                    {item.cardName}
-                  </p>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {result && (
-          <div className="mt-6 border-t pt-6">
-            <p className="text-sm text-gray-500">Order Details</p>
-
-            <h2 className="text-lg sm:text-xl font-bold mt-1 text-[#5B3A29]">
-              {result.customerName}
-            </h2>
-
-            <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
-              <div className="rounded-lg bg-[#FFF8E1] border border-[#D4AF37]/40 p-3">
-                <p className="text-xs text-gray-500">Reference</p>
-                <p className="font-bold text-[#5B3A29]">{reference}</p>
-              </div>
-
-              <div className="rounded-lg bg-[#FFF8E1] border border-[#D4AF37]/40 p-3">
-                <p className="text-xs text-gray-500">Branch</p>
-                <p className="font-bold text-[#5B3A29]">
-                  {branchNumber || "Not specified"}
-                </p>
-              </div>
-            </div>
-
-            {orderComplete && (
-              <div className="mt-4 rounded-lg bg-[#FFF8E1] border border-[#D4AF37] p-4">
-                <p className="text-[#5B3A29] font-bold text-sm">
-                  🎉 YOUR ORDER IS READY FOR RELEASE
-                </p>
-                <p className="text-[#5B3A29] text-xs mt-1">
-                  Please contact LIC Printing Shop for pickup or release arrangements.
-                </p>
-              </div>
-            )}
-
-            <div className="mt-4 rounded-lg border border-gray-200 p-4">
-              <p className="text-xs text-gray-500 font-semibold">
-                ORDER STATUS
-              </p>
-
-              <p className="text-xl font-bold text-[#5B3A29] mt-1">
-                {getFriendlyStatus(result.currentStatus)}
-              </p>
-
-              <p className="mt-2 text-sm">
-                <strong>Progress:</strong> {result.progress}%
-              </p>
-            </div>
-
-            <div className="w-full bg-gray-200 rounded-full h-5 mt-4">
-              <div
-                className={`h-5 rounded-full transition-all duration-500 ${
-                  orderComplete ? "bg-[#D4AF37]" : "bg-green-600"
-                }`}
-                style={{ width: `${result.progress}%` }}
+    <main className="min-h-screen bg-[#3F261A] text-[#2B1A12]">
+      <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,#7A4A2E_0%,#4B2D1E_42%,#2B1A12_100%)]">
+        <div className="mx-auto grid min-h-screen max-w-7xl grid-cols-1 items-center gap-10 px-5 py-10 lg:grid-cols-2 lg:px-12">
+          
+          <section className="hidden lg:block text-white">
+            <div className="max-w-xl">
+              <Image
+                src="/lic-logo.jpg"
+                alt="LIC Printing Shop Logo"
+                width={130}
+                height={80}
+                className="mb-8 rounded"
+                priority
               />
+
+              <p className="mb-4 text-sm font-semibold uppercase tracking-[0.35em] text-[#D4AF37]">
+                Order Tracking Portal
+              </p>
+
+              <h1 className="text-5xl font-bold leading-tight">
+                Track your BIR receipt and invoice orders with confidence.
+              </h1>
+
+              <p className="mt-6 max-w-lg text-base leading-7 text-white/75">
+                Stay updated from layouting, printing, packaging, and release.
+                Built for LIC Printing Shop clients and business owners nationwide.
+              </p>
+
+              <div className="mt-10 grid grid-cols-3 gap-4">
+                <div className="rounded-xl border border-white/10 bg-white/10 p-4">
+                  <p className="text-2xl font-bold text-[#D4AF37]">Live</p>
+                  <p className="mt-1 text-xs text-white/70">Trello Status</p>
+                </div>
+
+                <div className="rounded-xl border border-white/10 bg-white/10 p-4">
+                  <p className="text-2xl font-bold text-[#D4AF37]">BIR</p>
+                  <p className="mt-1 text-xs text-white/70">Accredited</p>
+                </div>
+
+                <div className="rounded-xl border border-white/10 bg-white/10 p-4">
+                  <p className="text-2xl font-bold text-[#D4AF37]">24/7</p>
+                  <p className="mt-1 text-xs text-white/70">Online Access</p>
+                </div>
+              </div>
             </div>
+          </section>
 
+          <section className="mx-auto w-full max-w-xl">
+            <div className="overflow-hidden rounded-[28px] border border-white/20 bg-white shadow-2xl">
+              <div className="h-2 bg-[#D4AF37]" />
 
-            <div className="mt-6 space-y-2">
-              {workflow.map((step, index) => {
-                const isCompleted =
-                  index < currentIndex ||
-                  (orderComplete && index === currentIndex);
+              <div className="p-6 sm:p-8">
+                <div className="text-center lg:text-left">
+                  <Image
+                    src="/lic-logo.jpg"
+                    alt="LIC Printing Shop Logo"
+                    width={110}
+                    height={70}
+                    className="mx-auto mb-5 rounded lg:mx-0"
+                    priority
+                  />
 
-                const isCurrent = !orderComplete && index === currentIndex;
+                  <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#D4AF37]">
+                    LIC Printing Shop
+                  </p>
 
-                return (
-                  <div
-                    key={step}
-                    className={`flex items-start gap-2 text-[13px] sm:text-sm ${
-                      isCompleted
-                        ? "text-green-600"
-                        : isCurrent
-                        ? "text-[#D4AF37] font-bold"
-                        : "text-gray-400"
-                    }`}
+                  <h2 className="mt-2 text-2xl font-bold text-[#3F261A]">
+                    BIR Receipt & Invoice Order Tracker
+                  </h2>
+
+                  <p className="mt-3 text-sm leading-6 text-gray-500">
+                    Enter your trade name, business name, or branch number to view the latest order status.
+                  </p>
+                </div>
+
+                <div className="mt-7">
+                  <input
+                    type="text"
+                    placeholder="Search trade name, business name, or branch number"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") trackOrder();
+                    }}
+                    className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition focus:border-[#D4AF37] focus:bg-white focus:ring-4 focus:ring-[#D4AF37]/20"
+                  />
+
+                  <button
+                    onClick={() => trackOrder()}
+                    className="mt-3 w-full rounded-xl bg-[#111111] px-4 py-3 text-sm font-bold text-white transition hover:bg-[#3F261A]"
                   >
-                    <span className="mt-0.5">
-                      {isCompleted ? "✓" : isCurrent ? "●" : "○"}
-                    </span>
+                    {loading ? "Searching..." : "Track Order"}
+                  </button>
 
-                    <span>{getFriendlyStatus(step)}</span>
+                  {error && (
+                    <p className="mt-4 rounded-lg bg-red-50 px-3 py-2 text-center text-sm text-red-600">
+                      {error}
+                    </p>
+                  )}
+                </div>
+
+                {matches.length > 0 && (
+                  <div className="mt-7 border-t border-gray-200 pt-6">
+                    <p className="text-sm font-semibold text-[#3F261A]">
+                      Multiple orders found
+                    </p>
+                    <p className="mt-1 text-xs text-gray-500">
+                      Please select the correct order from the list below.
+                    </p>
+
+                    <div className="mt-4 space-y-3">
+                      {matches.map((item) => (
+                        <button
+                          key={item.id}
+                          onClick={() => selectOrder(item.id)}
+                          className="w-full rounded-xl border border-gray-200 bg-white p-4 text-left transition hover:border-[#D4AF37] hover:bg-[#FFF8E1]"
+                        >
+                          <p className="font-bold text-[#3F261A]">
+                            {item.customerName}
+                          </p>
+                          <p className="mt-1 text-xs leading-5 text-gray-500">
+                            {item.cardName}
+                          </p>
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                );
-              })}
+                )}
+
+                {result && (
+                  <div className="mt-7 border-t border-gray-200 pt-6">
+                    <p className="text-xs font-bold uppercase tracking-[0.2em] text-gray-400">
+                      Order Details
+                    </p>
+
+                    <h3 className="mt-2 text-xl font-bold leading-snug text-[#3F261A]">
+                      {result.customerName}
+                    </h3>
+
+                    <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
+                      <div className="rounded-xl border border-[#D4AF37]/40 bg-[#FFF8E1] p-4">
+                        <p className="text-xs text-gray-500">Reference</p>
+                        <p className="mt-1 font-bold text-[#3F261A]">{reference}</p>
+                      </div>
+
+                      <div className="rounded-xl border border-[#D4AF37]/40 bg-[#FFF8E1] p-4">
+                        <p className="text-xs text-gray-500">Branch</p>
+                        <p className="mt-1 font-bold text-[#3F261A]">
+                          {branchNumber || "Not specified"}
+                        </p>
+                      </div>
+                    </div>
+
+                    {orderComplete && (
+                      <div className="mt-4 rounded-xl border border-green-200 bg-green-50 p-4">
+                        <p className="font-bold text-green-800">
+                          Your order is ready for release.
+                        </p>
+                        <p className="mt-1 text-xs leading-5 text-green-700">
+                          Please contact LIC Printing Shop for pickup or release arrangements.
+                        </p>
+                      </div>
+                    )}
+
+                    <div className="mt-4 rounded-xl border border-gray-200 bg-gray-50 p-4">
+                      <p className="text-xs font-bold uppercase tracking-[0.2em] text-gray-400">
+                        Current Status
+                      </p>
+
+                      <p className="mt-2 text-xl font-bold text-[#3F261A]">
+                        {getFriendlyStatus(result.currentStatus)}
+                      </p>
+
+                      <div className="mt-4 flex items-center justify-between text-sm">
+                        <span className="font-semibold text-gray-600">Progress</span>
+                        <span className="font-bold text-[#3F261A]">{result.progress}%</span>
+                      </div>
+
+                      <div className="mt-3 h-3 w-full overflow-hidden rounded-full bg-gray-200">
+                        <div
+                          className={`h-3 rounded-full transition-all duration-500 ${
+                            orderComplete ? "bg-[#D4AF37]" : "bg-green-600"
+                          }`}
+                          style={{ width: `${result.progress}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="mt-6 space-y-2">
+                      {workflow.map((step, index) => {
+                        const isCompleted =
+                          index < currentIndex ||
+                          (orderComplete && index === currentIndex);
+
+                        const isCurrent = !orderComplete && index === currentIndex;
+
+                        return (
+                          <div
+                            key={step}
+                            className={`flex items-start gap-3 rounded-lg px-2 py-1.5 text-sm ${
+                              isCompleted
+                                ? "text-green-700"
+                                : isCurrent
+                                ? "bg-[#FFF8E1] font-bold text-[#3F261A]"
+                                : "text-gray-400"
+                            }`}
+                          >
+                            <span className="mt-0.5">
+                              {isCompleted ? "✓" : isCurrent ? "●" : "○"}
+                            </span>
+
+                            <span>{getFriendlyStatus(step)}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                <div className="mt-8 border-t border-gray-200 pt-5 text-center">
+                  <p className="text-xs text-gray-400">Need assistance?</p>
+                  <p className="mt-1 font-bold text-[#3F261A]">LIC Printing Shop</p>
+                  <p className="text-xs text-gray-500">BIR Accredited Printing Services</p>
+
+                  <a
+                    href="https://licprintingshop.net/contact"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-4 inline-block rounded-lg bg-[#D4AF37] px-5 py-2 text-sm font-bold text-white transition hover:bg-[#c9a227]"
+                  >
+                    Contact LIC Printing Shop
+                  </a>
+                </div>
+              </div>
             </div>
-          </div>
-        )}
-
-        <div className="mt-8 pt-6 border-t text-center text-xs text-gray-500">
-          <p className="mb-2">Need assistance?</p>
-
-          <p className="font-bold text-lg text-[#6B3F2A]">
-            LIC Printing Shop
-          </p>
-
-          <p className="mb-4">
-            BIR Accredited Printing Services
-          </p>
-
-          <a
-            href="https://licprintingshop.net"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block bg-[#D4AF37] text-white px-4 py-2 rounded-md font-semibold hover:opacity-90 transition"
-          >
-            Contact LIC Printing Shop
-          </a>
+          </section>
         </div>
       </div>
     </main>
