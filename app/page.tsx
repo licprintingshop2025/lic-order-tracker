@@ -73,28 +73,10 @@ function getCustomerPhaseIndex(status: string) {
   return 0;
 }
 
-function getBranchNumber(text: string) {
-  const match = text.match(/BRANCH\s*(\d+[A-Z]?)/i);
-  if (match) return match[1];
-
-  const fallback = text.match(/\((\d+[A-Z]?)\)/);
-  if (fallback) return fallback[1];
-
-  return "";
-}
-
-function getShortReference(cardName: string) {
-  const branch = getBranchNumber(cardName);
-  if (branch) return `BRANCH-${branch}`;
-
-  return "N/A";
-}
-
 export default function Home() {
   const [query, setQuery] = useState("");
   const [lastQuery, setLastQuery] = useState("");
   const [result, setResult] = useState<any>(null);
-  const [matches, setMatches] = useState<any[]>([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -102,49 +84,23 @@ export default function Home() {
     const value = searchValue || query;
 
     if (!value.trim()) {
-      setError("Please enter business name or branch number.");
+      setError("Please enter your tracking number.");
       return;
     }
 
     setLoading(true);
     setError("");
     setResult(null);
-    setMatches([]);
 
     try {
       const response = await fetch(`/api/track?q=${encodeURIComponent(value)}`);
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.error || "Order not found");
-      } else if (data.multiple) {
-        setMatches(data.results);
-        setLastQuery(value);
+        setError(data.error || "Tracking number not found.");
       } else {
         setResult(data);
         setLastQuery(value);
-      }
-    } catch {
-      setError("Unable to connect. Please try again.");
-    }
-
-    setLoading(false);
-  }
-
-  async function selectOrder(id: string) {
-    setLoading(true);
-    setError("");
-    setResult(null);
-
-    try {
-      const response = await fetch(`/api/track?id=${encodeURIComponent(id)}`);
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.error || "Order not found");
-      } else {
-        setResult(data);
-        setMatches([]);
       }
     } catch {
       setError("Unable to connect. Please try again.");
@@ -154,22 +110,20 @@ export default function Home() {
   }
 
   useEffect(() => {
-    if (!lastQuery || matches.length > 0) return;
+    if (!lastQuery) return;
 
     const interval = setInterval(() => {
       trackOrder(lastQuery);
     }, 300000);
 
     return () => clearInterval(interval);
-  }, [lastQuery, matches.length]);
+  }, [lastQuery]);
 
   const orderComplete = result?.currentStatus
     ?.toUpperCase()
     .includes("READY FOR RELEASE");
 
   const phaseIndex = result ? getCustomerPhaseIndex(result.currentStatus) : 0;
-  const branchNumber = result ? getBranchNumber(result.cardName) : "";
-  const reference = result ? getShortReference(result.cardName) : "";
 
   return (
     <main className="min-h-screen bg-[#2B1A12]">
@@ -194,14 +148,14 @@ export default function Home() {
             </h1>
 
             <p className="mt-6 max-w-lg text-base leading-7 text-white/75">
-              A professional order tracking portal for LIC Printing Shop clients.
-              Check your order status anytime, anywhere.
+              Enter your official LIC tracking number to check your order status
+              anytime, anywhere.
             </p>
 
             <div className="mt-10 grid max-w-lg grid-cols-3 gap-4">
               <div className="rounded-xl border border-white/10 bg-white/10 p-4">
                 <p className="text-2xl font-bold text-[#D4AF37]">Live</p>
-                <p className="mt-1 text-xs text-white/70">Trello Status</p>
+                <p className="mt-1 text-xs text-white/70">Order Status</p>
               </div>
 
               <div className="rounded-xl border border-white/10 bg-white/10 p-4">
@@ -210,8 +164,8 @@ export default function Home() {
               </div>
 
               <div className="rounded-xl border border-white/10 bg-white/10 p-4">
-                <p className="text-2xl font-bold text-[#D4AF37]">24/7</p>
-                <p className="mt-1 text-xs text-white/70">Online Access</p>
+                <p className="text-2xl font-bold text-[#D4AF37]">Secure</p>
+                <p className="mt-1 text-xs text-white/70">Tracking Number</p>
               </div>
             </div>
           </section>
@@ -239,20 +193,24 @@ export default function Home() {
                 </h2>
 
                 <p className="mt-3 text-sm leading-6 text-gray-500">
-                  Enter your trade name, business name, or branch number to view the latest order status.
+                  Enter your LIC tracking number to view the latest order status.
                 </p>
 
                 <div className="mt-7">
                   <input
                     type="text"
-                    placeholder="Search trade name, business name, or branch number"
+                    placeholder="Enter your tracking number"
                     value={query}
-                    onChange={(e) => setQuery(e.target.value)}
+                    onChange={(e) => setQuery(e.target.value.toUpperCase())}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") trackOrder();
                     }}
-                    className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition focus:border-[#D4AF37] focus:bg-white focus:ring-4 focus:ring-[#D4AF37]/20"
+                    className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm font-semibold tracking-wide outline-none transition focus:border-[#D4AF37] focus:bg-white focus:ring-4 focus:ring-[#D4AF37]/20"
                   />
+
+                  <p className="mt-2 text-xs text-gray-400">
+                    Example: LIC26-B7A4F91C2B8D
+                  </p>
 
                   <button
                     onClick={() => trackOrder()}
@@ -268,59 +226,22 @@ export default function Home() {
                   )}
                 </div>
 
-                {matches.length > 0 && (
-                  <div className="mt-7 border-t border-gray-200 pt-6">
-                    <p className="text-sm font-semibold text-[#3F261A]">
-                      Multiple orders found
-                    </p>
-                    <p className="mt-1 text-xs text-gray-500">
-                      Please select the correct order.
-                    </p>
-
-                    <div className="mt-4 space-y-3">
-                      {matches.map((item) => (
-                        <button
-                          key={item.id}
-                          onClick={() => selectOrder(item.id)}
-                          className="w-full rounded-xl border border-gray-200 bg-white p-4 text-left transition hover:border-[#D4AF37] hover:bg-[#FFF8E1]"
-                        >
-                          <p className="font-bold text-[#3F261A]">
-                            {item.customerName}
-                          </p>
-                          <p className="mt-1 text-xs leading-5 text-gray-500">
-                            {item.cardName}
-                          </p>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
                 {result && (
                   <div className="mt-7 border-t border-gray-200 pt-6">
                     <p className="text-xs font-bold uppercase tracking-[0.2em] text-gray-400">
                       Order Details
                     </p>
 
-                    <h3 className="mt-2 text-xl font-bold leading-snug text-[#3F261A]">
+                    <div className="mt-4 rounded-xl border border-[#D4AF37]/40 bg-[#FFF8E1] p-4">
+                      <p className="text-xs text-gray-500">Tracking Number</p>
+                      <p className="mt-1 font-bold tracking-wide text-[#3F261A]">
+                        {result.trackingNumber}
+                      </p>
+                    </div>
+
+                    <h3 className="mt-4 text-xl font-bold leading-snug text-[#3F261A]">
                       {result.customerName}
                     </h3>
-
-                    <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
-                      <div className="rounded-xl border border-[#D4AF37]/40 bg-[#FFF8E1] p-4">
-                        <p className="text-xs text-gray-500">Reference</p>
-                        <p className="mt-1 font-bold text-[#3F261A]">
-                          {reference}
-                        </p>
-                      </div>
-
-                      <div className="rounded-xl border border-[#D4AF37]/40 bg-[#FFF8E1] p-4">
-                        <p className="text-xs text-gray-500">Branch</p>
-                        <p className="mt-1 font-bold text-[#3F261A]">
-                          {branchNumber || "Not specified"}
-                        </p>
-                      </div>
-                    </div>
 
                     {orderComplete && (
                       <div className="mt-4 rounded-xl border border-green-200 bg-green-50 p-4">
@@ -372,7 +293,10 @@ export default function Home() {
                           const isCurrent = index === phaseIndex && !orderComplete;
 
                           return (
-                            <div key={step} className="relative flex flex-1 flex-col items-center">
+                            <div
+                              key={step}
+                              className="relative flex flex-1 flex-col items-center"
+                            >
                               {index < trackingSteps.length - 1 && (
                                 <div
                                   className={`absolute left-1/2 top-4 h-1 w-full ${

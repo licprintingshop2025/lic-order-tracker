@@ -24,6 +24,7 @@ function getProgress(listName: string) {
 
 function cleanCustomerName(cardName: string) {
   return cardName
+    .replace(/^LIC\d{2}-[A-Z0-9]{12,16}\s*\|\s*/i, "")
     .replace(/^\([^)]*\)\s*/, "")
     .replace(/\([^)]*\)/g, "")
     .replace(/SERVICE-\d+/gi, "")
@@ -49,11 +50,20 @@ function cleanCustomerName(cardName: string) {
     .trim();
 }
 
+function extractTrackingNumber(cardName: string) {
+  const match = cardName.toUpperCase().match(/LIC\d{2}-[A-Z0-9]{12,16}/);
+  return match ? match[0] : "";
+}
+
 async function getListName(idList: string) {
   const response = await fetch(
     `https://api.trello.com/1/lists/${idList}?key=${process.env.TRELLO_KEY}&token=${process.env.TRELLO_TOKEN}`,
     { cache: "no-store" }
   );
+
+  if (!response.ok) {
+    throw new Error("Unable to fetch Trello list.");
+  }
 
   const list = await response.json();
   return list.name;
@@ -62,56 +72,34 @@ async function getListName(idList: string) {
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const q = searchParams.get("q")?.toLowerCase().trim();
-    const selectedId = searchParams.get("id");
+
+    const q = searchParams.get("q")?.toUpperCase().trim();
+
+    if (!q) {
+      return NextResponse.json(
+        { error: "Please enter your tracking number." },
+        { status: 400 }
+      );
+    }
+
+    const trackingPattern = /^LIC\d{2}-[A-Z0-9]{12,16}$/;
+
+    if (!trackingPattern.test(q)) {
+      return NextResponse.json(
+        { error: "Please enter a valid LIC tracking number." },
+        { status: 400 }
+      );
+    }
 
     const cards = await getBoardCards();
 
-    let card;
-
-    if (selectedId) {
-      card = cards.find((item: any) => item.id === selectedId);
-    } else {
-      if (!q) {
-        return NextResponse.json(
-          { error: "Please enter business name or branch number." },
-          { status: 400 }
-        );
-      }
-
-      const searchWords = q.split(" ").filter(Boolean);
-
-      const matches = cards.filter((item: any) => {
-        const cardName = item.name.toLowerCase();
-        return searchWords.every((word) => cardName.includes(word));
-      });
-
-      if (matches.length === 0) {
-        return NextResponse.json(
-          { error: "Order not found. Please check your search." },
-          { status: 404 }
-        );
-      }
-
-      if (matches.length > 1) {
-        return NextResponse.json({
-          success: true,
-          multiple: true,
-          count: matches.length,
-          results: matches.slice(0, 10).map((item: any) => ({
-            id: item.id,
-            customerName: cleanCustomerName(item.name),
-            cardName: item.name,
-          })),
-        });
-      }
-
-      card = matches[0];
-    }
+    const card = cards.find((item: any) =>
+      item.name.toUpperCase().includes(q)
+    );
 
     if (!card) {
       return NextResponse.json(
-        { error: "Selected order not found." },
+        { error: "Tracking number not found." },
         { status: 404 }
       );
     }
@@ -121,6 +109,7 @@ export async function GET(request: Request) {
     return NextResponse.json({
       success: true,
       multiple: false,
+      trackingNumber: extractTrackingNumber(card.name),
       customerName: cleanCustomerName(card.name),
       cardName: card.name,
       currentList: listName,
