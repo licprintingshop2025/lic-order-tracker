@@ -24,7 +24,7 @@ function getProgress(listName: string) {
 
 function cleanCustomerName(cardName: string) {
   return cardName
-    .replace(/^LIC\d{2}-[A-Z0-9]{12,16}\s*\|\s*/i, "")
+    .replace(/^LIC\d{2}-[A-Z0-9]{8,16}\s*\|?\s*/i, "")
     .replace(/^\([^)]*\)\s*/, "")
     .replace(/\([^)]*\)/g, "")
     .replace(/SERVICE-\d+/gi, "")
@@ -51,14 +51,19 @@ function cleanCustomerName(cardName: string) {
 }
 
 function extractTrackingNumber(cardName: string) {
-  const match = cardName.toUpperCase().match(/LIC\d{2}-[A-Z0-9]{12,16}/);
+  const match = cardName
+    .toUpperCase()
+    .match(/LIC\d{2}-[A-Z0-9]{8,16}/);
+
   return match ? match[0] : "";
 }
 
 async function getListName(idList: string) {
   const response = await fetch(
     `https://api.trello.com/1/lists/${idList}?key=${process.env.TRELLO_KEY}&token=${process.env.TRELLO_TOKEN}`,
-    { cache: "no-store" }
+    {
+      cache: "no-store",
+    }
   );
 
   if (!response.ok) {
@@ -77,17 +82,25 @@ export async function GET(request: Request) {
 
     if (!q) {
       return NextResponse.json(
-        { error: "Please enter your tracking number." },
-        { status: 400 }
+        {
+          error: "Please enter your tracking number.",
+        },
+        {
+          status: 400,
+        }
       );
     }
 
-    const trackingPattern = /^LIC\d{2}-[A-Z0-9]{12,16}$/;
+    const trackingPattern = /^LIC\d{2}-[A-Z0-9]{8,16}$/;
 
     if (!trackingPattern.test(q)) {
       return NextResponse.json(
-        { error: "Please enter a valid LIC tracking number." },
-        { status: 400 }
+        {
+          error: "Please enter a valid LIC tracking number.",
+        },
+        {
+          status: 400,
+        }
       );
     }
 
@@ -99,8 +112,12 @@ export async function GET(request: Request) {
 
     if (!card) {
       return NextResponse.json(
-        { error: "Tracking number not found." },
-        { status: 404 }
+        {
+          error: "Tracking number not found.",
+        },
+        {
+          status: 404,
+        }
       );
     }
 
@@ -119,8 +136,12 @@ export async function GET(request: Request) {
     });
   } catch (error: any) {
     return NextResponse.json(
-      { error: error.message || "Something went wrong." },
-      { status: 500 }
+      {
+        error: error.message || "Something went wrong.",
+      },
+      {
+        status: 500,
+      }
     );
   }
 }
