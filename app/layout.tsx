@@ -16,9 +16,14 @@ export const metadata: Metadata = {
   title: "LIC Printing Shop | Order Tracker",
   description: "BIR Receipt & Invoice Order Tracker",
   icons: {
-    icon: "/icon.jpg",
-    shortcut: "/icon.jpg",
-    apple: "/icon.jpg",
+    icon: [
+      {
+        url: "/lic-logo.jpg",
+        type: "image/jpeg",
+      },
+    ],
+    shortcut: "/lic-logo.jpg",
+    apple: "/lic-logo.jpg",
   },
 };
 
