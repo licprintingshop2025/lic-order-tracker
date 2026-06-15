@@ -322,41 +322,26 @@ export default function Home() {
           </div>
         )}
 
-        <div className="mt-8 border-t pt-5 text-center">
-          <p className="text-xs text-gray-500 mb-1">Need assistance?</p>
+        <div className="mt-8 pt-6 border-t text-center text-xs text-gray-500">
+          <p className="mb-2">Need assistance?</p>
 
-          <p className="text-lg font-bold text-[#5B3A29]">
+          <p className="font-bold text-lg text-[#6B3F2A]">
             LIC Printing Shop
           </p>
 
-          <p className="text-sm text-gray-600">
+          <p className="mb-4">
             BIR Accredited Printing Services
           </p>
 
-          <div className="mt-3 text-sm text-gray-700 space-y-1">
-            <p>📧 licprintingshop2025@gmail.com</p>
-            <p>☎️ (02) 853 19583</p>
-            <p>📱 +63 943 416 4978</p>
-
-            <p className="text-xs text-gray-500 mt-3 leading-relaxed">
-              3F, Room 304, MCR Industries Inc.
-              <br />
-              495 Boni Avenue, Mandaluyong City
-              <br />
-              1550 Metro Manila, Philippines
-            </p>
-          </div>
-
-          <div className="flex justify-center mt-4">
-            <a
-              href="https://licprintingshop.net/contact"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-[#D4AF37] hover:bg-[#c9a227] text-white text-sm font-semibold px-5 py-2 rounded-lg transition"
-            >
-              Contact LIC Printing Shop
-            </a>
-          </div>
+          <a
+            href="https://licprintingshop.net"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block bg-[#D4AF37] text-white px-4 py-2 rounded-md font-semibold hover:opacity-90 transition"
+          >
+            Contact LIC Printing Shop
+          </a>
+        </div>
         </div>
       </div>
     </main>
