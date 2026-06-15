@@ -290,9 +290,6 @@ export default function Home() {
               />
             </div>
 
-            <p className="text-xs text-gray-400 mt-2">
-              Status automatically updates every 5 minutes
-            </p>
 
             <div className="mt-6 space-y-2">
               {workflow.map((step, index) => {
