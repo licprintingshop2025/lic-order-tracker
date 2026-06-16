@@ -22,48 +22,71 @@ function getProgress(listName: string) {
   return 0;
 }
 
-function cleanCustomerName(cardName: string) {
-  return cardName
-    .replace(/^LIC\d{2}-[A-Z0-9]{8,16}\s*\|?\s*/i, "")
-    .replace(/^\([^)]*\)\s*/, "")
-    .replace(/\([^)]*\)/g, "")
-    .replace(/SERVICE-\d+/gi, "")
-    .replace(/SALES-\d+/gi, "")
-    .replace(/SI\s*NVAT\s*\d+/gi, "")
-    .replace(/SI\s*VAT\s*\d+/gi, "")
-    .replace(/NON-VAT/gi, "")
-    .replace(/VAT/gi, "")
-    .replace(/\bJANUARY\b.*$/i, "")
-    .replace(/\bFEBRUARY\b.*$/i, "")
-    .replace(/\bMARCH\b.*$/i, "")
-    .replace(/\bAPRIL\b.*$/i, "")
-    .replace(/\bMAY\b.*$/i, "")
-    .replace(/\bJUNE\b.*$/i, "")
-    .replace(/\bJULY\b.*$/i, "")
-    .replace(/\bAUGUST\b.*$/i, "")
-    .replace(/\bAUG\b.*$/i, "")
-    .replace(/\bSEPTEMBER\b.*$/i, "")
-    .replace(/\bOCTOBER\b.*$/i, "")
-    .replace(/\bNOVEMBER\b.*$/i, "")
-    .replace(/\bDECEMBER\b.*$/i, "")
-    .replace(/\s+/g, " ")
-    .trim();
+function extractTrackingNumber(cardName: string) {
+  const match = cardName.toUpperCase().match(/LIC\d{2}-[A-Z0-9]{8,16}/);
+  return match ? match[0] : "";
 }
 
-function extractTrackingNumber(cardName: string) {
+function cleanCustomerName(cardName: string) {
+  let name = cardName;
+
+  // Remove tracking number at the start
+  name = name.replace(/^LIC\d{2}-[A-Z0-9]{8,16}\s*\|?\s*/i, "");
+
+  // Remove first parentheses after tracking number = staff/admin name
+  name = name.replace(/^\([^)]*\)\s*/, "");
+
+  // Remove branch text like (BRANCH 1)
+  name = name.replace(/\(BRANCH\s*[^)]*\)/gi, "");
+
+  // Remove RDO code like (050), (045), (54A), etc.
+  name = name.replace(/\(\d+[A-Z]?\)/gi, "");
+
+  // Stop before document type
+  name = name.replace(/\b(SALES|SI|BI|CR|OR|SERVICE|DR|AR|CI|INV)[-\s]?\d+.*$/i, "");
+
+  // Stop before tax type if no document type was detected
+  name = name.replace(/\b(VAT|NON-VAT|NVAT)\b.*$/i, "");
+
+  // Stop before month/date
+  name = name.replace(/\bJANUARY\b.*$/i, "");
+  name = name.replace(/\bFEBRUARY\b.*$/i, "");
+  name = name.replace(/\bMARCH\b.*$/i, "");
+  name = name.replace(/\bAPRIL\b.*$/i, "");
+  name = name.replace(/\bMAY\b.*$/i, "");
+  name = name.replace(/\bJUNE\b.*$/i, "");
+  name = name.replace(/\bJULY\b.*$/i, "");
+  name = name.replace(/\bAUGUST\b.*$/i, "");
+  name = name.replace(/\bAUG\b.*$/i, "");
+  name = name.replace(/\bSEPTEMBER\b.*$/i, "");
+  name = name.replace(/\bOCTOBER\b.*$/i, "");
+  name = name.replace(/\bNOVEMBER\b.*$/i, "");
+  name = name.replace(/\bDECEMBER\b.*$/i, "");
+
+  return name.replace(/\s+/g, " ").trim();
+}
+
+function extractDocumentType(cardName: string) {
   const match = cardName
     .toUpperCase()
-    .match(/LIC\d{2}-[A-Z0-9]{8,16}/);
+    .match(/\b(SALES-\d+|SI\s*NVAT\s*\d+|SI\s*VAT\s*\d+|SI-\d+|BI-\d+|CR-\d+|OR-\d+|SERVICE-\d+|DR-\d+|AR-\d+|CI-\d+)\b/g);
 
-  return match ? match[0] : "";
+  return match ? match.join(" / ") : "";
+}
+
+function extractTaxType(cardName: string) {
+  const name = cardName.toUpperCase();
+
+  if (name.includes("NON-VAT") || name.includes("NVAT")) return "NON-VAT";
+  if (name.includes("VAT")) return "VAT";
+
+  return "";
 }
 
 async function getListName(idList: string) {
   const response = await fetch(
     `https://api.trello.com/1/lists/${idList}?key=${process.env.TRELLO_KEY}&token=${process.env.TRELLO_TOKEN}`,
-    {
-      cache: "no-store",
-    }
+    { cache: "no-store" }
   );
 
   if (!response.ok) {
@@ -77,17 +100,12 @@ async function getListName(idList: string) {
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-
     const q = searchParams.get("q")?.toUpperCase().trim();
 
     if (!q) {
       return NextResponse.json(
-        {
-          error: "Please enter your tracking number.",
-        },
-        {
-          status: 400,
-        }
+        { error: "Please enter your tracking number." },
+        { status: 400 }
       );
     }
 
@@ -95,12 +113,8 @@ export async function GET(request: Request) {
 
     if (!trackingPattern.test(q)) {
       return NextResponse.json(
-        {
-          error: "Please enter a valid LIC tracking number.",
-        },
-        {
-          status: 400,
-        }
+        { error: "Please enter a valid LIC tracking number." },
+        { status: 400 }
       );
     }
 
@@ -112,12 +126,8 @@ export async function GET(request: Request) {
 
     if (!card) {
       return NextResponse.json(
-        {
-          error: "Tracking number not found.",
-        },
-        {
-          status: 404,
-        }
+        { error: "Tracking number not found." },
+        { status: 404 }
       );
     }
 
@@ -128,6 +138,8 @@ export async function GET(request: Request) {
       multiple: false,
       trackingNumber: extractTrackingNumber(card.name),
       customerName: cleanCustomerName(card.name),
+      documentType: extractDocumentType(card.name),
+      taxType: extractTaxType(card.name),
       cardName: card.name,
       currentList: listName,
       currentStatus: listName,
@@ -136,12 +148,8 @@ export async function GET(request: Request) {
     });
   } catch (error: any) {
     return NextResponse.json(
-      {
-        error: error.message || "Something went wrong.",
-      },
-      {
-        status: 500,
-      }
+      { error: error.message || "Something went wrong." },
+      { status: 500 }
     );
   }
 }
