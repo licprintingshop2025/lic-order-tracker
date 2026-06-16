@@ -30,38 +30,32 @@ function extractTrackingNumber(cardName: string) {
 function cleanCustomerName(cardName: string) {
   let name = cardName;
 
-  // Remove tracking number at the start
-  name = name.replace(/^LIC\d{2}-[A-Z0-9]{8,16}\s*\|?\s*/i, "");
+  // Remove tracking number
+  name = name.replace(/^LIC\d{2}-[A-Z0-9]{8,16}\s*/i, "");
 
-  // Remove first parentheses after tracking number = staff/admin name
+  // Remove staff name
   name = name.replace(/^\([^)]*\)\s*/, "");
 
-  // Remove branch text like (BRANCH 1)
+  // Remove branch
   name = name.replace(/\(BRANCH\s*[^)]*\)/gi, "");
 
-  // Remove RDO code like (050), (045), (54A), etc.
+  // Remove RDO
   name = name.replace(/\(\d+[A-Z]?\)/gi, "");
 
-  // Stop before document type
-  name = name.replace(/\b(SALES|SI|BI|CR|OR|SERVICE|DR|AR|CI|INV)[-\s]?\d+.*$/i, "");
+  // Remove invoice references
+  name = name.replace(/\b(SALES|SI|BI|CR|OR|SERVICE|DR|AR|CI)[-\s]?\d+.*$/i, "");
 
-  // Stop before tax type if no document type was detected
+  // Remove words like INVOICE / RECEIPT
+  name = name.replace(/\b(INVOICE|RECEIPT|SALES INVOICE|SERVICE INVOICE)\b.*$/i, "");
+
+  // Remove VAT text
   name = name.replace(/\b(VAT|NON-VAT|NVAT)\b.*$/i, "");
 
-  // Stop before month/date
-  name = name.replace(/\bJANUARY\b.*$/i, "");
-  name = name.replace(/\bFEBRUARY\b.*$/i, "");
-  name = name.replace(/\bMARCH\b.*$/i, "");
-  name = name.replace(/\bAPRIL\b.*$/i, "");
-  name = name.replace(/\bMAY\b.*$/i, "");
-  name = name.replace(/\bJUNE\b.*$/i, "");
-  name = name.replace(/\bJULY\b.*$/i, "");
-  name = name.replace(/\bAUGUST\b.*$/i, "");
-  name = name.replace(/\bAUG\b.*$/i, "");
-  name = name.replace(/\bSEPTEMBER\b.*$/i, "");
-  name = name.replace(/\bOCTOBER\b.*$/i, "");
-  name = name.replace(/\bNOVEMBER\b.*$/i, "");
-  name = name.replace(/\bDECEMBER\b.*$/i, "");
+  // Remove month/date text
+  name = name.replace(
+    /\b(JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|AUG|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)\b.*$/i,
+    ""
+  );
 
   return name.replace(/\s+/g, " ").trim();
 }
