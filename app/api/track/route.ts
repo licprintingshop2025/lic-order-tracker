@@ -36,26 +36,36 @@ function cleanCustomerName(cardName: string) {
   // Remove staff name
   name = name.replace(/^\([^)]*\)\s*/, "");
 
-  // Remove branch
-  name = name.replace(/\(BRANCH\s*[^)]*\)/gi, "");
+  // Remove branch references
+  name = name.replace(/\(BRANCH[^)]*\)/gi, "");
 
-  // Remove RDO
+  // Remove RDO codes like (050)
   name = name.replace(/\(\d+[A-Z]?\)/gi, "");
 
-  // Remove invoice references
-  name = name.replace(/\b(SALES|SI|BI|CR|OR|SERVICE|DR|AR|CI)[-\s]?\d+.*$/i, "");
+  // Remove invoice abbreviations with numbers
+  name = name.replace(
+    /\b(SI|CR|DR|AR|BI|SERVICE|SALES|OR)[-\s]?\d+\b/gi,
+    ""
+  );
 
-  // Remove words like INVOICE / RECEIPT
-  name = name.replace(/\b(INVOICE|RECEIPT|SALES INVOICE|SERVICE INVOICE)\b.*$/i, "");
+  // Remove standalone invoice abbreviations
+  name = name.replace(
+    /\b(SI|CR|DR|AR|BI|SERVICE|SALES|OR|INVOICE|RECEIPT)\b/gi,
+    ""
+  );
 
-  // Remove VAT text
-  name = name.replace(/\b(VAT|NON-VAT|NVAT)\b.*$/i, "");
+  // Remove VAT / NON-VAT
+  name = name.replace(/\b(VAT|NON-VAT|NVAT)\b/gi, "");
 
-  // Remove month/date text
+  // Remove dates/months and everything after them
   name = name.replace(
     /\b(JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|AUG|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)\b.*$/i,
     ""
   );
+
+  // Remove ATP notes
+  name = name.replace(/\(ORUS ATP.*$/i, "");
+  name = name.replace(/\(ATP.*$/i, "");
 
   return name.replace(/\s+/g, " ").trim();
 }
