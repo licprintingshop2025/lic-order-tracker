@@ -179,7 +179,7 @@ export default function Home() {
               </div>
             </div>
 
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-500 mt-3">
               Enter your official LIC tracking number below.
             </p>
 
