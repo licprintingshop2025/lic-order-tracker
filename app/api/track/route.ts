@@ -30,41 +30,28 @@ function extractTrackingNumber(cardName: string) {
 function cleanCustomerName(cardName: string) {
   let name = cardName;
 
-  // Remove tracking number
   name = name.replace(/^LIC\d{2}-[A-Z0-9]{8,16}\s*/i, "");
-
-  // Remove staff name
   name = name.replace(/^\([^)]*\)\s*/, "");
-
-  // Remove branch references
   name = name.replace(/\(BRANCH[^)]*\)/gi, "");
-
-  // Remove RDO codes like (050)
   name = name.replace(/\(\d+[A-Z]?\)/gi, "");
 
-  // Remove invoice abbreviations with numbers
   name = name.replace(
-    /\b(SI|CR|DR|AR|BI|SERVICE|SALES|OR)[-\s]?\d+\b/gi,
+    /\b(SI|CR|DR|AR|BI|SERVICE|SALES|OR|INVOICE|RECEIPT)[-\s]?\d*\b.*$/i,
     ""
   );
 
-  // Remove standalone invoice abbreviations
   name = name.replace(
-    /\b(SI|CR|DR|AR|BI|SERVICE|SALES|OR|INVOICE|RECEIPT)\b/gi,
+    /\b\d+\s+(JAN|FEB|MAR|APR|MAY|JUN|JUNE|JUL|JULY|AUG|SEP|SEPT|OCT|NOV|DEC)\b.*$/i,
     ""
   );
 
-  // Remove VAT / NON-VAT
-  name = name.replace(/\b(VAT|NON-VAT|NVAT)\b/gi, "");
-
-  // Remove dates/months and everything after them
   name = name.replace(
-    /\b(JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|AUG|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)\b.*$/i,
+    /\b(JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|AUG|SEPTEMBER|SEPT|OCTOBER|OCT|NOVEMBER|NOV|DECEMBER|DEC)\b.*$/i,
     ""
   );
 
-  // Remove ATP notes
   name = name.replace(/\(ORUS ATP.*$/i, "");
+  name = name.replace(/\(ORIG ATP.*$/i, "");
   name = name.replace(/\(ATP.*$/i, "");
 
   return name.replace(/\s+/g, " ").trim();
