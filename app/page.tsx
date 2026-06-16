@@ -157,31 +157,31 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="rounded-[28px] bg-white p-8 shadow-[0_20px_60px_rgba(0,0,0,0.08)] ring-1 ring-[#E8D7A6] sm:p-10">
+          <div className="rounded-[28px] bg-white p-8 shadow-[0_20px_60px_rgba(0,0,0,0.08)] ring-1 ring-[#E8D7A6] sm:px-10 sm:py-8">
             <div className="flex flex-col items-center justify-center text-center">
               <Image
                 src="/lic-logo.jpg"
                 alt="LIC Printing Shop"
-                width={85}
-                height={85}
+                width={72}
+                height={72}
                 className="mx-auto rounded"
                 priority
               />
 
-              <p className="mt-4 text-[11px] font-bold uppercase tracking-[0.35em] text-[#C9A227]">
+              <p className="mt-3 text-[10px] font-bold uppercase tracking-[0.35em] text-[#C9A227]">
                 LIC Printing Shop
               </p>
 
-              <h2 className="mt-2 text-3xl font-bold leading-tight text-[#4A2A1A] md:text-5xl">
+              <h2 className="mt-1 text-3xl font-bold leading-tight text-[#4A2A1A] md:text-4xl">
                 Track Your Order
               </h2>
 
-              <p className="mx-auto mt-6 max-w-md text-center text-sm leading-relaxed text-gray-500">
+              <p className="mx-auto mt-4 max-w-md text-center text-sm leading-relaxed text-gray-500">
                 Enter your official LIC tracking number below.
               </p>
             </div>
 
-            <div className="mt-6">
+            <div className="mt-5">
               <label className="text-xs font-bold uppercase tracking-[0.2em] text-gray-400">
                 Tracking Number
               </label>
@@ -203,7 +203,7 @@ export default function Home() {
 
               <button
                 onClick={() => trackOrder()}
-                className="mt-5 w-full rounded-2xl bg-gradient-to-r from-[#C9A227] to-[#B88422] px-5 py-4 text-sm font-bold text-white shadow-lg shadow-[#C9A227]/30 transition duration-300 hover:scale-[1.01]"
+                className="mt-4 w-full rounded-2xl bg-gradient-to-r from-[#C9A227] to-[#B88422] px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-[#C9A227]/30 transition duration-300 hover:scale-[1.01]"
               >
                 {loading ? "Searching..." : "Track Order"}
               </button>
