@@ -159,23 +159,23 @@ export default function Home() {
           </div>
 
           <div className="rounded-[28px] bg-white p-6 shadow-2xl ring-1 ring-[#E8D7A6] sm:p-8">
-            <div className="mb-6 flex items-center gap-4">
+            <div className="flex flex-col items-center text-center gap-4">
               <Image
-                src="/lic-logo.jpg"
+                src="/logo.png"
                 alt="LIC Printing Shop"
-                width={95}
-                height={60}
-                className="rounded"
-                priority
+                width={80}
+                height={80}
+                className="rounded-md"
               />
 
               <div>
-                <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#C9A227]">
+                <p className="text-[11px] tracking-[0.3em] text-[#C89D2A] uppercase">
                   LIC Printing Shop
                 </p>
-                <h2 className="mt-1 text-xl font-bold text-[#4A2A1A]">
+
+                <h3 className="text-3xl font-bold text-[#3B1F12] mt-1">
                   Track Your Order
-                </h2>
+                </h3>
               </div>
             </div>
 
@@ -401,12 +401,14 @@ export default function Home() {
 
         <section className="mx-auto max-w-7xl px-5 pb-10 lg:px-12">
           <div className="rounded-[28px] bg-white p-6 shadow-xl ring-1 ring-[#E8D7A6] sm:p-8">
-            <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#C9A227]">
-              Order Status Journey
-            </p>
-            <h2 className="mt-3 text-3xl font-bold text-[#4A2A1A]">
-              Production Timeline Preview
-            </h2>
+            <div className="text-center">
+              <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#C9A227]">
+                Order Status Journey
+              </p>
+              <h2 className="mt-3 text-3xl font-bold text-[#4A2A1A]">
+                Production Timeline Preview
+              </h2>
+            </div>
 
             <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-5">
               {previewSteps.map((step, index) => (
