@@ -401,12 +401,14 @@ export default function Home() {
 
         <section className="mx-auto max-w-7xl px-5 pb-10 lg:px-12">
           <div className="rounded-[28px] bg-white p-6 shadow-xl ring-1 ring-[#E8D7A6] sm:p-8">
-            <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#C9A227]">
-              Order Status Journey
-            </p>
-            <h2 className="mt-3 text-3xl font-bold text-[#4A2A1A]">
-              Production Timeline Preview
-            </h2>
+            <div className="text-center">
+              <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#C9A227]">
+                Order Status Journey
+              </p>
+              <h2 className="mt-3 text-3xl font-bold text-[#4A2A1A]">
+                Production Timeline Preview
+              </h2>
+            </div>
 
             <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-5">
               {previewSteps.map((step, index) => (
@@ -438,7 +440,7 @@ export default function Home() {
             <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#C9A227]">
               Need Assistance?
             </p>
-            
+
             <p className="mt-3 text-sm text-white/70">
               For pickup schedules, release arrangements, and order inquiries,
               our team is ready to assist.
