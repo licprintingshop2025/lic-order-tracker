@@ -5,8 +5,9 @@ import { useEffect, useState } from "react";
 
 const trackingSteps = [
   "Order Received",
-  "Printing",
-  "Finishing",
+  "Documents Verified",
+  "Printing in Progress",
+  "Quality Check",
   "Ready for Release",
 ];
 
@@ -15,7 +16,7 @@ const previewSteps = [
   "Documents Verified",
   "Printing in Progress",
   "Quality Check",
-  "Ready for Delivery",
+  "Ready for Release",
 ];
 
 function getFriendlyStatus(status: string) {
@@ -42,22 +43,7 @@ function getFriendlyStatus(status: string) {
 function getCustomerPhaseIndex(status: string) {
   const name = status.toUpperCase();
 
-  if (
-    name.includes("STATION 1") ||
-    name.includes("ADMIN HEAD") ||
-    name.includes("QUALITY CHECKING")
-  ) {
-    return 0;
-  }
-
-  if (
-    name.includes("RECEIVING") ||
-    name.includes("PRE-PRINT") ||
-    name.includes("RUNNING") ||
-    name.includes("NUMBERING")
-  ) {
-    return 1;
-  }
+  if (name.includes("READY FOR RELEASE")) return 4;
 
   if (
     name.includes("COLLATING") ||
@@ -71,10 +57,20 @@ function getCustomerPhaseIndex(status: string) {
     name.includes("LABELLING") ||
     name.includes("FINISH RECEIPT")
   ) {
+    return 3;
+  }
+
+  if (name.includes("RUNNING") || name.includes("NUMBERING")) {
     return 2;
   }
 
-  if (name.includes("READY FOR RELEASE")) return 3;
+  if (
+    name.includes("QUALITY CHECKING") ||
+    name.includes("RECEIVING") ||
+    name.includes("PRE-PRINT")
+  ) {
+    return 1;
+  }
 
   return 0;
 }
@@ -260,9 +256,7 @@ export default function Home() {
                   </p>
 
                   <div className="mt-4 flex items-center justify-between text-sm">
-                    <span className="font-semibold text-gray-600">
-                      Progress
-                    </span>
+                    <span className="font-semibold text-gray-600">Progress</span>
                     <span className="font-bold text-[#4A2A1A]">
                       {result.progress}%
                     </span>
@@ -316,7 +310,7 @@ export default function Home() {
                           </div>
 
                           <p
-                            className={`mt-3 text-center text-xs font-semibold ${
+                            className={`mt-3 text-center text-[11px] font-semibold ${
                               isDone || isCurrent
                                 ? "text-[#4A2A1A]"
                                 : "text-gray-400"
@@ -431,7 +425,7 @@ export default function Home() {
                     {index === 1 && "Files and requirements checked."}
                     {index === 2 && "Production is currently underway."}
                     {index === 3 && "Final inspection before release."}
-                    {index === 4 && "Order completed and ready."}
+                    {index === 4 && "Order completed and ready for release."}
                   </p>
                 </div>
               ))}
@@ -445,6 +439,9 @@ export default function Home() {
               Need Assistance?
             </p>
 
+            <h2 className="mt-3 text-3xl font-bold">
+              Need help with your order?
+            </h2>
 
             <p className="mt-3 text-sm text-white/70">
               For pickup schedules, release arrangements, and order inquiries,
