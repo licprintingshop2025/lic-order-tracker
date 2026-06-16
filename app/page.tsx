@@ -271,8 +271,8 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-[#FAF7F2] text-[#2B1A12]">
       <div className="bg-[radial-gradient(circle_at_top_left,rgba(201,162,39,0.16),transparent_34%),linear-gradient(135deg,#FAF7F2_0%,#F5EFE4_100%)]">
-        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-5 py-10 lg:grid-cols-[1fr_420px] lg:px-12 lg:py-16">
-          <aside className="order-1 lg:order-2 lg:sticky lg:top-8 lg:self-start">
+        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-5 py-10 lg:grid-cols-[minmax(0,1.45fr)_minmax(430px,0.9fr)] lg:gap-12 lg:px-12 lg:py-16 xl:grid-cols-[minmax(0,1.35fr)_minmax(460px,0.9fr)]">
+          <aside className="order-1 w-full lg:order-2 lg:sticky lg:top-8 lg:self-start">
             {trackingCard}
           </aside>
 
