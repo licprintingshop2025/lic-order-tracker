@@ -209,7 +209,7 @@ export default function Home() {
                   />
 
                   <p className="mt-2 text-xs text-gray-400">
-                    Example: LIC26-B7A4F91C2B8D
+                    Example: LIC26-B7A4F91C
                   </p>
 
                   <button
