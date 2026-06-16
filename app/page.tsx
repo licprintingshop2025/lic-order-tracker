@@ -161,7 +161,7 @@ export default function Home() {
           <div className="rounded-[28px] bg-white p-6 shadow-2xl ring-1 ring-[#E8D7A6] sm:p-8">
             <div className="flex flex-col items-center text-center gap-4">
               <Image
-                src="/logo.png"
+                src="/lic-logo.jpg"
                 alt="LIC Printing Shop"
                 width={80}
                 height={80}
