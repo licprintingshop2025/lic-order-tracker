@@ -264,9 +264,8 @@ export default function Home() {
 
                   <div className="mt-3 h-3 overflow-hidden rounded-full bg-gray-200">
                     <div
-                      className={`h-3 rounded-full transition-all duration-500 ${
-                        orderComplete ? "bg-[#C9A227]" : "bg-green-600"
-                      }`}
+                      className={`h-3 rounded-full transition-all duration-500 ${orderComplete ? "bg-[#C9A227]" : "bg-green-600"
+                        }`}
                       style={{ width: `${result.progress}%` }}
                     />
                   </div>
@@ -289,32 +288,29 @@ export default function Home() {
                         >
                           {index < trackingSteps.length - 1 && (
                             <div
-                              className={`absolute left-1/2 top-4 h-1 w-full ${
-                                index < phaseIndex || orderComplete
+                              className={`absolute left-1/2 top-4 h-1 w-full ${index < phaseIndex || orderComplete
                                   ? "bg-green-600"
                                   : "bg-gray-200"
-                              }`}
+                                }`}
                             />
                           )}
 
                           <div
-                            className={`z-10 flex h-9 w-9 items-center justify-center rounded-full border-2 text-sm font-bold ${
-                              isDone
+                            className={`z-10 flex h-9 w-9 items-center justify-center rounded-full border-2 text-sm font-bold ${isDone
                                 ? "border-green-600 bg-green-600 text-white"
                                 : isCurrent
-                                ? "border-[#C9A227] bg-[#FFF8E1] text-[#4A2A1A]"
-                                : "border-gray-300 bg-white text-gray-400"
-                            }`}
+                                  ? "border-[#C9A227] bg-[#FFF8E1] text-[#4A2A1A]"
+                                  : "border-gray-300 bg-white text-gray-400"
+                              }`}
                           >
                             {isDone ? "✓" : index + 1}
                           </div>
 
                           <p
-                            className={`mt-3 text-center text-[11px] font-semibold ${
-                              isDone || isCurrent
+                            className={`mt-3 text-center text-[11px] font-semibold ${isDone || isCurrent
                                 ? "text-[#4A2A1A]"
                                 : "text-gray-400"
-                            }`}
+                              }`}
                           >
                             {step}
                           </p>
@@ -331,13 +327,12 @@ export default function Home() {
                       return (
                         <div
                           key={step}
-                          className={`flex items-center gap-3 rounded-2xl border p-3 ${
-                            isDone
+                          className={`flex items-center gap-3 rounded-2xl border p-3 ${isDone
                               ? "border-green-200 bg-green-50 text-green-700"
                               : isCurrent
-                              ? "border-[#C9A227] bg-[#FFF8E1] text-[#4A2A1A]"
-                              : "border-gray-200 bg-white text-gray-400"
-                          }`}
+                                ? "border-[#C9A227] bg-[#FFF8E1] text-[#4A2A1A]"
+                                : "border-gray-200 bg-white text-gray-400"
+                            }`}
                         >
                           <span className="flex h-8 w-8 items-center justify-center rounded-full border text-sm font-bold">
                             {isDone ? "✓" : index + 1}
