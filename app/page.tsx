@@ -22,22 +22,22 @@ const previewSteps = [
 function getFriendlyStatus(status: string) {
   const name = status.toUpperCase();
 
-  if (name.includes("STATION 1")) return "Layouting & Encoding";
-  if (name.includes("ADMIN HEAD")) return "For Approval to Printing";
-  if (name.includes("QUALITY CHECKING")) return "Quality Checking";
-  if (name.includes("RECEIVING") || name.includes("PRE-PRINT")) return "Preparing Files";
+  if (name.includes("STATION 1")) return "Order Received";
+  if (name.includes("ADMIN HEAD")) return "Documents Verified";
+  if (name.includes("QUALITY CHECKING")) return "Documents Verified";
+  if (name.includes("RECEIVING") || name.includes("PRE-PRINT")) return "Documents Verified";
   if (name.includes("RUNNING")) return "Printing in Progress";
-  if (name.includes("NUMBERING")) return "Numbering Process";
-  if (name.includes("COLLATING")) return "Collating";
-  if (name.includes("STAPLING") || name.includes("PADDING")) return "Stapling / Padding";
-  if (name.includes("CUTTING") || name.includes("TRIMMING")) return "Cutting & Trimming";
-  if (name.includes("BROWNING")) return "Finishing";
-  if (name.includes("STAMPING")) return "Stamping";
-  if (name.includes("PACKAGING") || name.includes("LABELLING")) return "Packaging";
-  if (name.includes("FINISH RECEIPT")) return "Final Checking";
+  if (name.includes("NUMBERING")) return "Printing in Progress";
+  if (name.includes("COLLATING")) return "Quality Check";
+  if (name.includes("STAPLING") || name.includes("PADDING")) return "Quality Check";
+  if (name.includes("CUTTING") || name.includes("TRIMMING")) return "Quality Check";
+  if (name.includes("BROWNING")) return "Quality Check";
+  if (name.includes("STAMPING")) return "Quality Check";
+  if (name.includes("PACKAGING") || name.includes("LABELLING")) return "Quality Check";
+  if (name.includes("FINISH RECEIPT")) return "Quality Check";
   if (name.includes("READY FOR RELEASE")) return "Ready for Release";
 
-  return status;
+  return "Order Received";
 }
 
 function getCustomerPhaseIndex(status: string) {
@@ -60,11 +60,10 @@ function getCustomerPhaseIndex(status: string) {
     return 3;
   }
 
-  if (name.includes("RUNNING") || name.includes("NUMBERING")) {
-    return 2;
-  }
+  if (name.includes("RUNNING") || name.includes("NUMBERING")) return 2;
 
   if (
+    name.includes("ADMIN HEAD") ||
     name.includes("QUALITY CHECKING") ||
     name.includes("RECEIVING") ||
     name.includes("PRE-PRINT")
@@ -130,7 +129,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-[#FAF7F2] text-[#2B1A12]">
       <div className="bg-[radial-gradient(circle_at_top_left,rgba(201,162,39,0.16),transparent_34%),linear-gradient(135deg,#FAF7F2_0%,#F5EFE4_100%)]">
-        <section className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-10 px-5 py-10 lg:grid-cols-2 lg:px-12 lg:py-16">
+        <section className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 px-5 py-12 lg:grid-cols-2 lg:px-12 lg:py-20">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.35em] text-[#C9A227]">
               Order Tracking Portal
@@ -158,32 +157,31 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="rounded-[28px] bg-white p-6 shadow-2xl ring-1 ring-[#E8D7A6] sm:p-8">
-            <div className="flex flex-col items-center text-center gap-4">
+          <div className="rounded-[28px] bg-white p-8 shadow-[0_20px_60px_rgba(0,0,0,0.08)] ring-1 ring-[#E8D7A6] sm:p-10">
+            <div className="flex flex-col items-center justify-center text-center">
               <Image
                 src="/lic-logo.jpg"
                 alt="LIC Printing Shop"
-                width={80}
-                height={80}
-                className="rounded-md"
+                width={85}
+                height={85}
+                className="mx-auto rounded"
+                priority
               />
 
-              <div>
-                <p className="text-[11px] tracking-[0.3em] text-[#C89D2A] uppercase">
-                  LIC Printing Shop
-                </p>
+              <p className="mt-4 text-[11px] font-bold uppercase tracking-[0.35em] text-[#C9A227]">
+                LIC Printing Shop
+              </p>
 
-                <h3 className="text-3xl font-bold text-[#3B1F12] mt-1">
-                  Track Your Order
-                </h3>
-              </div>
+              <h2 className="mt-2 text-3xl font-bold leading-tight text-[#4A2A1A] md:text-5xl">
+                Track Your Order
+              </h2>
+
+              <p className="mx-auto mt-6 max-w-md text-center text-sm leading-relaxed text-gray-500">
+                Enter your official LIC tracking number below.
+              </p>
             </div>
 
-            <p className="text-sm text-gray-500 mt-5">
-              Enter your official LIC tracking number below.
-            </p>
-
-            <div className="mt-5">
+            <div className="mt-6">
               <label className="text-xs font-bold uppercase tracking-[0.2em] text-gray-400">
                 Tracking Number
               </label>
@@ -205,7 +203,7 @@ export default function Home() {
 
               <button
                 onClick={() => trackOrder()}
-                className="mt-4 w-full rounded-2xl bg-gradient-to-r from-[#C9A227] to-[#B88422] px-5 py-4 text-sm font-bold text-white shadow-lg shadow-[#C9A227]/20 transition hover:opacity-95"
+                className="mt-5 w-full rounded-2xl bg-gradient-to-r from-[#C9A227] to-[#B88422] px-5 py-4 text-sm font-bold text-white shadow-lg shadow-[#C9A227]/30 transition duration-300 hover:scale-[1.01]"
               >
                 {loading ? "Searching..." : "Track Order"}
               </button>
@@ -256,7 +254,9 @@ export default function Home() {
                   </p>
 
                   <div className="mt-4 flex items-center justify-between text-sm">
-                    <span className="font-semibold text-gray-600">Progress</span>
+                    <span className="font-semibold text-gray-600">
+                      Progress
+                    </span>
                     <span className="font-bold text-[#4A2A1A]">
                       {result.progress}%
                     </span>
@@ -401,14 +401,12 @@ export default function Home() {
 
         <section className="mx-auto max-w-7xl px-5 pb-10 lg:px-12">
           <div className="rounded-[28px] bg-white p-6 shadow-xl ring-1 ring-[#E8D7A6] sm:p-8">
-            <div className="text-center">
-              <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#C9A227]">
-                Order Status Journey
-              </p>
-              <h2 className="mt-3 text-3xl font-bold text-[#4A2A1A]">
-                Production Timeline Preview
-              </h2>
-            </div>
+            <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#C9A227]">
+              Order Status Journey
+            </p>
+            <h2 className="mt-3 text-3xl font-bold text-[#4A2A1A]">
+              Production Timeline Preview
+            </h2>
 
             <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-5">
               {previewSteps.map((step, index) => (
@@ -440,7 +438,7 @@ export default function Home() {
             <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#C9A227]">
               Need Assistance?
             </p>
-
+            
             <p className="mt-3 text-sm text-white/70">
               For pickup schedules, release arrangements, and order inquiries,
               our team is ready to assist.
