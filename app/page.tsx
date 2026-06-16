@@ -74,9 +74,7 @@ function getCustomerPhaseIndex(status: string) {
     return 2;
   }
 
-  if (name.includes("READY FOR RELEASE")) {
-    return 3;
-  }
+  if (name.includes("READY FOR RELEASE")) return 3;
 
   return 0;
 }
@@ -143,7 +141,7 @@ export default function Home() {
             </p>
 
             <h1 className="mt-5 max-w-xl text-4xl font-bold leading-tight text-[#4A2A1A] sm:text-5xl">
-              Track Your BIR Printing Order
+              Track Your Receipt & Invoice Order
             </h1>
 
             <p className="mt-5 max-w-xl text-base leading-7 text-gray-600">
@@ -211,7 +209,7 @@ export default function Home() {
 
               <button
                 onClick={() => trackOrder()}
-                className="mt-4 w-full rounded-2xl bg-gradient-to-r from-[#C9A227] to-[#B88422] px-5 py-4 text-sm font-bold text-white shadow-lg transition hover:opacity-95"
+                className="mt-4 w-full rounded-2xl bg-gradient-to-r from-[#C9A227] to-[#B88422] px-5 py-4 text-sm font-bold text-white shadow-lg shadow-[#C9A227]/20 transition hover:opacity-95"
               >
                 {loading ? "Searching..." : "Track Order"}
               </button>
@@ -374,9 +372,21 @@ export default function Home() {
 
             <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3">
               {[
-                ["01", "Enter Tracking Number", "Use the unique tracking number provided by LIC Printing Shop."],
-                ["02", "View Production Status", "Monitor your order as it moves through production."],
-                ["03", "Receive Updates", "Stay informed until your order is ready for release."],
+                [
+                  "01",
+                  "Enter Tracking Number",
+                  "Use the unique tracking number provided by LIC Printing Shop.",
+                ],
+                [
+                  "02",
+                  "View Production Status",
+                  "Monitor your order as it moves through production.",
+                ],
+                [
+                  "03",
+                  "Ready for Release",
+                  "Know when your order is completed and ready for pickup or release.",
+                ],
               ].map(([num, title, text]) => (
                 <div
                   key={title}
@@ -430,15 +440,15 @@ export default function Home() {
         </section>
 
         <section className="mx-auto max-w-4xl px-5 pb-14">
-          <div className="rounded-[28px] bg-[#4A2A1A] p-8 text-center text-white shadow-xl">
+          <div className="rounded-[28px] bg-[#4A2A1A] px-8 py-6 text-center text-white shadow-xl">
             <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#C9A227]">
               Need Assistance?
             </p>
-            <h2 className="mt-3 text-3xl font-bold">
-              Need help with your order?
-            </h2>
+
+
             <p className="mt-3 text-sm text-white/70">
-              For pickup schedules, release arrangements, and order inquiries, our team is ready to assist.
+              For pickup schedules, release arrangements, and order inquiries,
+              our team is ready to assist.
             </p>
 
             <div className="mt-6 flex justify-center">
@@ -446,14 +456,14 @@ export default function Home() {
                 href="https://licprintingshop.net/contact"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-full bg-[#C9A227] px-8 py-3 text-sm font-bold text-white transition hover:opacity-90"
+                className="rounded-full bg-[#C9A227] px-10 py-4 text-sm font-bold text-white shadow-lg shadow-[#C9A227]/30 transition hover:scale-105"
               >
                 Contact LIC Printing Shop
               </a>
             </div>
 
-            <p className="mt-5 text-sm text-white/70">
-              Visit our contact page for assistance, pickup arrangements, and order inquiries.
+            <p className="mt-4 text-xs text-white/60">
+              www.licprintingshop.net
             </p>
           </div>
         </section>
