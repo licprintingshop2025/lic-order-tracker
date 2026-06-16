@@ -435,41 +435,25 @@ export default function Home() {
               Need Assistance?
             </p>
             <h2 className="mt-3 text-3xl font-bold">
-              Our support team is ready to assist you.
+              Need help with your order?
             </h2>
             <p className="mt-3 text-sm text-white/70">
-              For pickup, release, or order concerns, contact LIC Printing Shop.
+              For pickup schedules, release arrangements, and order inquiries, our team is ready to assist.
             </p>
 
-            <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
-              <a
-                href="https://m.me/licprintingshop"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-full bg-[#C9A227] px-6 py-3 text-sm font-bold text-white"
-              >
-                Messenger
-              </a>
-
+            <div className="mt-6 flex justify-center">
               <a
                 href="https://licprintingshop.net/contact"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-full bg-white px-6 py-3 text-sm font-bold text-[#4A2A1A]"
+                className="rounded-full bg-[#C9A227] px-8 py-3 text-sm font-bold text-white transition hover:opacity-90"
               >
-                Contact Page
-              </a>
-
-              <a
-                href="mailto:licprintingshop2025@gmail.com"
-                className="rounded-full border border-white/30 px-6 py-3 text-sm font-bold text-white"
-              >
-                Email Support
+                Contact LIC Printing Shop
               </a>
             </div>
 
-            <p className="mt-5 text-xs text-white/60">
-              licprintingshop2025@gmail.com
+            <p className="mt-5 text-sm text-white/70">
+              Visit our contact page for assistance, pickup arrangements, and order inquiries.
             </p>
           </div>
         </section>
