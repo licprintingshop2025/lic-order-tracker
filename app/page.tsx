@@ -7,7 +7,7 @@ const trackingSteps = [
   "Order Received",
   "Documents Verified",
   "Printing in Progress",
-  "Quality Check",
+  "Production Finishing",
   "Ready for Release",
 ];
 
@@ -15,27 +15,50 @@ const previewSteps = [
   "Order Received",
   "Documents Verified",
   "Printing in Progress",
-  "Quality Check",
+  "Production Finishing",
   "Ready for Release",
 ];
 
 function getFriendlyStatus(status: string) {
   const name = status.toUpperCase();
 
-  if (name.includes("STATION 1")) return "Order Received";
-  if (name.includes("ADMIN HEAD")) return "Documents Verified";
-  if (name.includes("QUALITY CHECKING")) return "Documents Verified";
-  if (name.includes("RECEIVING") || name.includes("PRE-PRINT")) return "Documents Verified";
-  if (name.includes("RUNNING")) return "Printing in Progress";
-  if (name.includes("NUMBERING")) return "Printing in Progress";
-  if (name.includes("COLLATING")) return "Quality Check";
-  if (name.includes("STAPLING") || name.includes("PADDING")) return "Quality Check";
-  if (name.includes("CUTTING") || name.includes("TRIMMING")) return "Quality Check";
-  if (name.includes("BROWNING")) return "Quality Check";
-  if (name.includes("STAMPING")) return "Quality Check";
-  if (name.includes("PACKAGING") || name.includes("LABELLING")) return "Quality Check";
-  if (name.includes("FINISH RECEIPT")) return "Quality Check";
-  if (name.includes("READY FOR RELEASE")) return "Ready for Release";
+  if (name.includes("STATION 1"))
+    return "Order Received";
+
+  if (
+    name.includes("ADMIN HEAD") ||
+    name.includes("QUALITY CHECKING") ||
+    name.includes("RECEIVING") ||
+    name.includes("PRE-PRINT")
+  )
+    return "Documents Verified";
+
+  if (
+    name.includes("RUNNING") ||
+    name.includes("NUMBERING")
+  )
+    return "Printing in Progress";
+
+  if (
+    name.includes("COLLATING") ||
+    name.includes("STAPLING") ||
+    name.includes("PADDING") ||
+    name.includes("CUTTING") ||
+    name.includes("TRIMMING")
+  )
+    return "Finishing";
+
+  if (
+    name.includes("BROWNING") ||
+    name.includes("STAMPING") ||
+    name.includes("PACKAGING") ||
+    name.includes("LABELLING") ||
+    name.includes("FINISH RECEIPT")
+  )
+    return "Final Quality Check";
+
+  if (name.includes("READY FOR RELEASE"))
+    return "Ready for Release";
 
   return "Order Received";
 }
