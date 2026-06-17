@@ -22,37 +22,22 @@ const previewSteps = [
 function getFriendlyStatus(status: string) {
   const name = status.toUpperCase();
 
+  if (name.includes("STATION 1")) return "Order Processing";
+  if (name.includes("ADMIN HEAD")) return "For Approval";
+  if (name.includes("QUALITY CHECKING")) return "Documents Verified";
+  if (name.includes("RECEIVING") || name.includes("PRE-PRINT")) return "Preparing Files";
+  if (name.includes("RUNNING")) return "Printing";
+  if (name.includes("NUMBERING")) return "Numbering";
+  if (name.includes("COLLATING")) return "Collating";
+  if (name.includes("STAPLING") || name.includes("PADDING")) return "Stapling / Padding";
+  if (name.includes("CUTTING") || name.includes("TRIMMING")) return "Cutting & Trimming";
+  if (name.includes("BROWNING")) return "Finishing";
+  if (name.includes("STAMPING")) return "Stamping";
+  if (name.includes("PACKAGING") || name.includes("LABELLING")) return "Packaging";
+  if (name.includes("FINISH RECEIPT")) return "Final Checking";
   if (name.includes("READY FOR RELEASE")) return "Ready for Release";
 
-  if (
-    name.includes("COLLATING") ||
-    name.includes("STAPLING") ||
-    name.includes("PADDING") ||
-    name.includes("CUTTING") ||
-    name.includes("TRIMMING") ||
-    name.includes("BROWNING") ||
-    name.includes("STAMPING") ||
-    name.includes("PACKAGING") ||
-    name.includes("LABELLING") ||
-    name.includes("FINISH RECEIPT")
-  ) {
-    return "Production Finishing";
-  }
-
-  if (name.includes("RUNNING") || name.includes("NUMBERING")) {
-    return "Printing";
-  }
-
-  if (
-    name.includes("ADMIN HEAD") ||
-    name.includes("QUALITY CHECKING") ||
-    name.includes("RECEIVING") ||
-    name.includes("PRE-PRINT")
-  ) {
-    return "Documents Verified";
-  }
-
-  return "Order Received";
+  return "Order Processing";
 }
 
 function getCustomerPhaseIndex(status: string) {
@@ -265,7 +250,7 @@ export default function Home() {
                   </p>
 
                   <p className="mt-2 text-xl font-bold text-[#4A2A1A]">
-                    {result.currentList || result.currentStatus}
+                    {getFriendlyStatus(result.currentStatus)}
                   </p>
 
                   <div className="mt-4 flex items-center justify-between text-sm">
