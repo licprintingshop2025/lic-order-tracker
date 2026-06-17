@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 const trackingSteps = [
   "Order Received",
   "Documents Verified",
-  "Printing in Progress",
+  "Printing",
   "Production Finishing",
   "Ready for Release",
 ];
@@ -14,7 +14,7 @@ const trackingSteps = [
 const previewSteps = [
   "Order Received",
   "Documents Verified",
-  "Printing in Progress",
+  "Printing",
   "Production Finishing",
   "Ready for Release",
 ];
@@ -22,43 +22,35 @@ const previewSteps = [
 function getFriendlyStatus(status: string) {
   const name = status.toUpperCase();
 
-  if (name.includes("STATION 1"))
-    return "Order Received";
-
-  if (
-    name.includes("ADMIN HEAD") ||
-    name.includes("QUALITY CHECKING") ||
-    name.includes("RECEIVING") ||
-    name.includes("PRE-PRINT")
-  )
-    return "Documents Verified";
-
-  if (
-    name.includes("RUNNING") ||
-    name.includes("NUMBERING")
-  )
-    return "Printing in Progress";
+  if (name.includes("READY FOR RELEASE")) return "Ready for Release";
 
   if (
     name.includes("COLLATING") ||
     name.includes("STAPLING") ||
     name.includes("PADDING") ||
     name.includes("CUTTING") ||
-    name.includes("TRIMMING")
-  )
-    return "Finishing";
-
-  if (
+    name.includes("TRIMMING") ||
     name.includes("BROWNING") ||
     name.includes("STAMPING") ||
     name.includes("PACKAGING") ||
     name.includes("LABELLING") ||
     name.includes("FINISH RECEIPT")
-  )
-    return "Final Quality Check";
+  ) {
+    return "Production Finishing";
+  }
 
-  if (name.includes("READY FOR RELEASE"))
-    return "Ready for Release";
+  if (name.includes("RUNNING") || name.includes("NUMBERING")) {
+    return "Printing";
+  }
+
+  if (
+    name.includes("ADMIN HEAD") ||
+    name.includes("QUALITY CHECKING") ||
+    name.includes("RECEIVING") ||
+    name.includes("PRE-PRINT")
+  ) {
+    return "Documents Verified";
+  }
 
   return "Order Received";
 }
@@ -180,7 +172,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="rounded-[28px] bg-white p-8 shadow-[0_20px_60px_rgba(0,0,0,0.08)] ring-1 ring-[#E8D7A6] sm:px-10 sm:py-8">
+          <div className="rounded-[28px] bg-white px-8 py-7 shadow-[0_20px_60px_rgba(0,0,0,0.08)] ring-1 ring-[#E8D7A6] sm:px-10 sm:py-8">
             <div className="flex flex-col items-center justify-center text-center">
               <Image
                 src="/lic-logo.jpg"
@@ -287,8 +279,9 @@ export default function Home() {
 
                   <div className="mt-3 h-3 overflow-hidden rounded-full bg-gray-200">
                     <div
-                      className={`h-3 rounded-full transition-all duration-500 ${orderComplete ? "bg-[#C9A227]" : "bg-green-600"
-                        }`}
+                      className={`h-3 rounded-full transition-all duration-500 ${
+                        orderComplete ? "bg-[#C9A227]" : "bg-green-600"
+                      }`}
                       style={{ width: `${result.progress}%` }}
                     />
                   </div>
@@ -311,29 +304,32 @@ export default function Home() {
                         >
                           {index < trackingSteps.length - 1 && (
                             <div
-                              className={`absolute left-1/2 top-4 h-1 w-full ${index < phaseIndex || orderComplete
+                              className={`absolute left-1/2 top-4 h-1 w-full ${
+                                index < phaseIndex || orderComplete
                                   ? "bg-green-600"
                                   : "bg-gray-200"
-                                }`}
+                              }`}
                             />
                           )}
 
                           <div
-                            className={`z-10 flex h-9 w-9 items-center justify-center rounded-full border-2 text-sm font-bold ${isDone
+                            className={`z-10 flex h-9 w-9 items-center justify-center rounded-full border-2 text-sm font-bold ${
+                              isDone
                                 ? "border-green-600 bg-green-600 text-white"
                                 : isCurrent
-                                  ? "border-[#C9A227] bg-[#FFF8E1] text-[#4A2A1A]"
-                                  : "border-gray-300 bg-white text-gray-400"
-                              }`}
+                                ? "border-[#C9A227] bg-[#FFF8E1] text-[#4A2A1A]"
+                                : "border-gray-300 bg-white text-gray-400"
+                            }`}
                           >
                             {isDone ? "✓" : index + 1}
                           </div>
 
                           <p
-                            className={`mt-3 text-center text-[11px] font-semibold ${isDone || isCurrent
+                            className={`mt-3 text-center text-[11px] font-semibold ${
+                              isDone || isCurrent
                                 ? "text-[#4A2A1A]"
                                 : "text-gray-400"
-                              }`}
+                            }`}
                           >
                             {step}
                           </p>
@@ -350,12 +346,13 @@ export default function Home() {
                       return (
                         <div
                           key={step}
-                          className={`flex items-center gap-3 rounded-2xl border p-3 ${isDone
+                          className={`flex items-center gap-3 rounded-2xl border p-3 ${
+                            isDone
                               ? "border-green-200 bg-green-50 text-green-700"
                               : isCurrent
-                                ? "border-[#C9A227] bg-[#FFF8E1] text-[#4A2A1A]"
-                                : "border-gray-200 bg-white text-gray-400"
-                            }`}
+                              ? "border-[#C9A227] bg-[#FFF8E1] text-[#4A2A1A]"
+                              : "border-gray-200 bg-white text-gray-400"
+                          }`}
                         >
                           <span className="flex h-8 w-8 items-center justify-center rounded-full border text-sm font-bold">
                             {isDone ? "✓" : index + 1}
@@ -444,7 +441,7 @@ export default function Home() {
                     {index === 0 && "Documents submitted and recorded."}
                     {index === 1 && "Files and requirements checked."}
                     {index === 2 && "Production is currently underway."}
-                    {index === 3 && "Final inspection before release."}
+                    {index === 3 && "Final processing before release."}
                     {index === 4 && "Order completed and ready for release."}
                   </p>
                 </div>
@@ -458,6 +455,10 @@ export default function Home() {
             <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#C9A227]">
               Need Assistance?
             </p>
+
+            <h3 className="mt-3 text-3xl font-bold">
+              Need help with your order?
+            </h3>
 
             <p className="mt-3 text-sm text-white/70">
               For pickup schedules, release arrangements, and order inquiries,
