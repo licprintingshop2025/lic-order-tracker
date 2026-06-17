@@ -265,7 +265,7 @@ export default function Home() {
                   </p>
 
                   <p className="mt-2 text-xl font-bold text-[#4A2A1A]">
-                    {getFriendlyStatus(result.currentStatus)}
+                    {result.currentList || result.currentStatus}
                   </p>
 
                   <div className="mt-4 flex items-center justify-between text-sm">
