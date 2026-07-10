@@ -7,7 +7,7 @@ export async function getBoardCards() {
     throw new Error("Missing Trello environment variables");
   }
 
-  const url = `https://api.trello.com/1/boards/${boardId}/cards?key=${key}&token=${token}`;
+  const url = `https://api.trello.com/1/boards/${boardId}/cards?filter=all&key=${key}&token=${token}`;
 
   const response = await fetch(url, {
     cache: "no-store",

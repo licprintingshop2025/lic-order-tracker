@@ -9,6 +9,7 @@ const trackingSteps = [
   "Printing",
   "Production Finishing",
   "Ready for Release",
+  "Delivered",
 ];
 
 const previewSteps = [
@@ -19,29 +20,15 @@ const previewSteps = [
   "Ready for Release",
 ];
 
-function getFriendlyStatus(status: string) {
-  const name = status.toUpperCase();
-
-  if (name.includes("STATION 1")) return "Order Processing";
-  if (name.includes("ADMIN HEAD")) return "For Approval";
-  if (name.includes("QUALITY CHECKING")) return "Documents Verified";
-  if (name.includes("RECEIVING") || name.includes("PRE-PRINT")) return "Preparing Files";
-  if (name.includes("RUNNING")) return "Printing";
-  if (name.includes("NUMBERING")) return "Numbering";
-  if (name.includes("COLLATING")) return "Collating";
-  if (name.includes("STAPLING") || name.includes("PADDING")) return "Stapling / Padding";
-  if (name.includes("CUTTING") || name.includes("TRIMMING")) return "Cutting & Trimming";
-  if (name.includes("BROWNING")) return "Finishing";
-  if (name.includes("STAMPING")) return "Stamping";
-  if (name.includes("PACKAGING") || name.includes("LABELLING")) return "Packaging";
-  if (name.includes("FINISH RECEIPT")) return "Final Checking";
-  if (name.includes("READY FOR RELEASE")) return "Ready for Release";
-
-  return "Order Processing";
-}
-
 function getCustomerPhaseIndex(status: string) {
   const name = status.toUpperCase();
+
+  if (
+    name.includes("DELIVERED BY LIC") ||
+    name.includes("PICKED UP BY CLIENT")
+  ) {
+    return 5;
+  }
 
   if (name.includes("READY FOR RELEASE")) return 4;
 
@@ -65,8 +52,8 @@ function getCustomerPhaseIndex(status: string) {
   if (
     name.includes("ADMIN HEAD") ||
     name.includes("QUALITY CHECKING") ||
-    name.includes("RECEIVING") ||
-    name.includes("PRE-PRINT")
+    name.includes("PRE-PRINT") ||
+    name.includes("RECEIVING")
   ) {
     return 1;
   }
@@ -124,7 +111,7 @@ export default function Home() {
     ?.toUpperCase()
     .includes("READY FOR RELEASE");
 
-  const phaseIndex = result ? getCustomerPhaseIndex(result.currentStatus) : 0;
+  const phaseIndex = result ? getCustomerPhaseIndex(result.currentList) : 0;
 
   return (
     <main className="min-h-screen bg-[#FAF7F2] text-[#2B1A12]">
@@ -188,7 +175,7 @@ export default function Home() {
 
               <input
                 type="text"
-                placeholder="LIC26-AB12CD34EF56"
+                placeholder="LIC-YYMMDD-XXXXXX"
                 value={query}
                 onChange={(e) => setQuery(e.target.value.toUpperCase())}
                 onKeyDown={(e) => {
@@ -198,7 +185,7 @@ export default function Home() {
               />
 
               <p className="mt-2 text-xs text-gray-400">
-                Example: LIC26-AB12CD34EF56
+                Example: LIC-260701-ABCDEF
               </p>
 
               <button
@@ -250,7 +237,7 @@ export default function Home() {
                   </p>
 
                   <p className="mt-2 text-xl font-bold text-[#4A2A1A]">
-                    {getFriendlyStatus(result.currentStatus)}
+                    {result.currentStatus}
                   </p>
 
                   <div className="mt-4 flex items-center justify-between text-sm">
