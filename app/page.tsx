@@ -266,8 +266,10 @@ export default function Home() {
 
                   <div className="hidden items-start justify-between sm:flex">
                     {trackingSteps.map((step, index) => {
-                      const isDone = index < phaseIndex || orderComplete;
-                      const isCurrent = index === phaseIndex && !orderComplete;
+                      const isDelivered = result?.isDelivered === true;
+
+                      const isDone = index < phaseIndex || isDelivered;
+                      const isCurrent = index === phaseIndex && !isDelivered;
 
                       return (
                         <div
