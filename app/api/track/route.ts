@@ -42,13 +42,13 @@ const CUSTOMER_STATUS: Record<string, string> = {
   "Receiving & Pre-Print Formatting":
     "Your files are being prepared and formatted for printing.",
 
-  "Running":
+  Running:
     "Great news! Your order is currently being printed.",
 
-  "Numbering":
+  Numbering:
     "Your documents are now receiving their serial numbering.",
 
-  "Collating":
+  Collating:
     "Your printed documents are being organized and arranged.",
 
   "Stapling/Padding":
@@ -57,10 +57,10 @@ const CUSTOMER_STATUS: Record<string, string> = {
   "Cutting & Trimming":
     "Your order is being trimmed to its final size.",
 
-  "Browning":
+  Browning:
     "Your order is in the final finishing process.",
 
-  "Stamping":
+  Stamping:
     "Your documents are currently being stamped.",
 
   "Packaging & Labelling":
@@ -77,6 +77,16 @@ const CUSTOMER_STATUS: Record<string, string> = {
 
   "Picked Up by Client":
     "Your order has been successfully delivered.",
+};
+
+type OrderDocument = {
+  name: string;
+  booklets: number | null;
+  serial?: string;
+  paper?: string;
+  ply?: string;
+  size?: string;
+  special?: string;
 };
 
 function isIgnoredList(listName: string) {
@@ -113,19 +123,29 @@ function getProgress(listName: string) {
 
   const stage = findWorkflowStage(listName);
 
-  if (!stage) return 0;
+  if (!stage) {
+    return 0;
+  }
 
-  const index = WORKFLOW.findIndex((item) => item === stage);
+  const index = WORKFLOW.findIndex(
+    (item) => item === stage
+  );
 
-  return Math.round(((index + 1) / WORKFLOW.length) * 100);
+  return Math.round(
+    ((index + 1) / WORKFLOW.length) * 100
+  );
 }
 
 function getNextStage(listName: string) {
   const stage = findWorkflowStage(listName);
 
-  if (!stage) return "";
+  if (!stage) {
+    return "";
+  }
 
-  const index = WORKFLOW.findIndex((item) => item === stage);
+  const index = WORKFLOW.findIndex(
+    (item) => item === stage
+  );
 
   return WORKFLOW[index + 1] || "Completed";
 }
@@ -141,178 +161,836 @@ function getCustomerStatus(listName: string) {
     return "Your order is currently being processed.";
   }
 
-  return CUSTOMER_STATUS[stage] || "Your order is currently being processed.";
+  return (
+    CUSTOMER_STATUS[stage] ||
+    "Your order is currently being processed."
+  );
 }
 
-function extractField(text: string, labels: string[]) {
+function escapeRegex(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function extractField(
+  text: string,
+  labels: string[]
+) {
   for (const label of labels) {
-    const regex = new RegExp(`${label}\\s*[:\\-]\\s*(.+)`, "i");
+    const regex = new RegExp(
+      `(?:^|\\n)\\s*${escapeRegex(
+        label
+      )}\\s*[:\\-]\\s*(.+)`,
+      "i"
+    );
+
     const match = text.match(regex);
 
     if (match) {
-      return match[1].split("\n")[0].trim();
+      return match[1]
+        .split("\n")[0]
+        .trim();
     }
   }
 
   return "";
 }
 
-function extractTrackingNumber(cardName: string, desc: string) {
+function extractNextLineField(
+  text: string,
+  labels: string[]
+) {
+  const lines = text
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  const upperLabels = labels.map((label) =>
+    label.toUpperCase()
+  );
+
+  for (let i = 0; i < lines.length - 1; i++) {
+    const current = lines[i].toUpperCase();
+
+    if (upperLabels.includes(current)) {
+      const value = lines[i + 1]?.trim();
+
+      if (value) {
+        return value;
+      }
+    }
+  }
+
+  return "";
+}
+
+function extractTrackingNumber(
+  cardName: string,
+  desc: string
+) {
   const combined = `${cardName}\n${desc}`;
 
   return (
     extractField(combined, [
       "Tracking No",
+      "Tracking No.",
       "Tracking Number",
       "Tracking",
       "TN",
     ]) ||
-    combined.match(/LIC\d{2}-[A-Z0-9]{6,20}/i)?.[0]?.toUpperCase() ||
+    extractNextLineField(combined, [
+      "Tracking No",
+      "Tracking No.",
+      "Tracking Number",
+      "Tracking",
+      "TN",
+    ]) ||
+    combined
+      .match(
+        /\bLIC-\d{6}-[A-Z0-9]{4,20}\b/i
+      )?.[0]
+      ?.toUpperCase() ||
     ""
   );
 }
 
-function cleanCustomerName(cardName: string, desc: string) {
-  const fromDesc = extractField(desc, [
-  "Trade Name",
-  "Customer",
-  "Customer Name",
-  "Client",
-  "Client Name",
-]);
+function cleanCustomerName(
+  cardName: string,
+  desc: string
+) {
+  const labels = [
+    "Trade Name",
+    "Business Name",
+    "Business",
+    "Customer",
+    "Customer Name",
+    "Client",
+    "Client Name",
+  ];
 
-  if (fromDesc) return fromDesc;
+  const directField = extractField(
+    desc,
+    labels
+  );
+
+  if (directField) {
+    return directField;
+  }
+
+  const nextLineField =
+    extractNextLineField(
+      desc,
+      labels
+    );
+
+  if (nextLineField) {
+    return nextLineField;
+  }
 
   let name = cardName;
 
-  name = name.replace(/LIC\d{2}-[A-Z0-9]{6,20}/gi, "");
-  name = name.replace(/^\([^)]*\)\s*/, "");
-  name = name.replace(/\(BRANCH[^)]*\)/gi, "");
-  name = name.replace(/\(\d+[A-Z]?\)/gi, "");
+  name = name.replace(
+    /\bLIC-\d{6}-[A-Z0-9]{4,20}\b/gi,
+    ""
+  );
 
   name = name.replace(
-    /\b(SI|CR|DR|AR|BI|SERVICE|SALES|OR|INVOICE|RECEIPT)[-\s]?\d*\b.*$/i,
+    /^\([^)]*\)\s*/i,
     ""
   );
 
-  name = name.replace(/\(ORUS ATP.*$/i, "");
-  name = name.replace(/\(ORIG ATP.*$/i, "");
-  name = name.replace(/\(ATP.*$/i, "");
-
-  return name.replace(/\s+/g, " ").trim();
-}
-
-function extractDocumentType(cardName: string, desc: string) {
-  return (
-    extractField(desc, ["Document Type", "Document", "Form Type"]) ||
-    cardName
-      .toUpperCase()
-      .match(
-        /\b(SALES-\d+|SI\s*NVAT\s*\d+|SI\s*VAT\s*\d+|SI-\d+|BI-\d+|CR-\d+|OR-\d+|SERVICE-\d+|DR-\d+|AR-\d+|CI-\d+)\b/g
-      )
-      ?.join(" / ") ||
+  name = name.replace(
+    /\b(JANUARY|FEBRUARY|MARCH|APRIL|MAY|JUNE|JULY|AUGUST|SEPTEMBER|OCTOBER|NOVEMBER|DECEMBER)\s+\d{1,2},?\s+\d{4}\b/gi,
     ""
   );
+
+  name = name.replace(
+    /\(NON-BIR\)/gi,
+    ""
+  );
+
+  name = name.replace(
+    /\(NON BIR\)/gi,
+    ""
+  );
+
+  name = name.replace(
+    /\(NON-VAT\)/gi,
+    ""
+  );
+
+  name = name.replace(
+    /\(VAT\)/gi,
+    ""
+  );
+
+  name = name.replace(
+    /\b(SERVICE INVOICE|SALES INVOICE|OFFICIAL RECEIPT|COLLECTION RECEIPT|DELIVERY RECEIPT|BILLING INVOICE|CASH INVOICE|INVOICE|RECEIPT)\s*[-–—]?\s*\d+\b.*$/i,
+    ""
+  );
+
+  name = name.replace(
+    /\(BRANCH[^)]*\)/gi,
+    ""
+  );
+
+  name = name.replace(
+    /\(ORUS ATP.*$/i,
+    ""
+  );
+
+  name = name.replace(
+    /\(ORIG ATP.*$/i,
+    ""
+  );
+
+  name = name.replace(
+    /\(ATP.*$/i,
+    ""
+  );
+
+  return name
+    .replace(/\s+/g, " ")
+    .replace(/\s*[-|/]\s*$/, "")
+    .trim();
 }
 
-function extractTaxType(cardName: string, desc: string) {
-  const taxFromDesc = extractField(desc, ["Tax Type", "Tax"]);
+function extractTaxType(
+  cardName: string,
+  desc: string
+) {
+  const labels = [
+    "Tax Type",
+    "Tax",
+    "Order Type",
+  ];
 
-  if (taxFromDesc) return taxFromDesc.toUpperCase();
+  const directField = extractField(
+    desc,
+    labels
+  );
 
-  const text = `${cardName}\n${desc}`.toUpperCase();
+  if (directField) {
+    return directField.toUpperCase();
+  }
 
-  if (text.includes("NON-VAT") || text.includes("NVAT")) return "NON-VAT";
-  if (text.includes("VAT")) return "VAT";
+  const nextLineField =
+    extractNextLineField(
+      desc,
+      labels
+    );
+
+  if (nextLineField) {
+    return nextLineField.toUpperCase();
+  }
+
+  const text =
+    `${cardName}\n${desc}`.toUpperCase();
+
+  if (text.includes("NON-BIR")) {
+    return "NON-BIR";
+  }
+
+  if (
+    text.includes("NON-VAT") ||
+    text.includes("NON VAT") ||
+    text.includes("NVAT")
+  ) {
+    return "NON-VAT";
+  }
+
+  if (text.includes("VAT")) {
+    return "VAT";
+  }
 
   return "";
 }
 
-async function getListName(idList: string) {
+function extractStructuredDocuments(
+  desc: string
+): OrderDocument[] {
+  const blockMatch = desc.match(
+    /DOCUMENT SPECIFICATIONS START([\s\S]*?)DOCUMENT SPECIFICATIONS END/i
+  );
+
+  if (!blockMatch) {
+    return [];
+  }
+
+  const block = blockMatch[1];
+
+  const sections = block
+    .split(
+      /(?=DOCUMENT\s+\d+\s*(?:\r?\n|$))/i
+    )
+    .map((section) => section.trim())
+    .filter(Boolean);
+
+  const documents: OrderDocument[] = [];
+
+  for (const section of sections) {
+    const documentNumberMatch =
+      section.match(
+        /^DOCUMENT\s+(\d+)/i
+      );
+
+    if (!documentNumberMatch) {
+      continue;
+    }
+
+    const type = extractField(
+      section,
+      [
+        "TYPE",
+        "Document Type",
+        "Description",
+      ]
+    );
+
+    const qtyText = extractField(
+      section,
+      [
+        "QTY",
+        "Quantity",
+        "Booklets",
+      ]
+    );
+
+    const serial = extractField(
+      section,
+      [
+        "SERIAL",
+        "Serial Number",
+      ]
+    );
+
+    const paper = extractField(
+      section,
+      ["PAPER"]
+    );
+
+    const ply = extractField(
+      section,
+      ["PLY"]
+    );
+
+    const size = extractField(
+      section,
+      ["SIZE"]
+    );
+
+    const special = extractField(
+      section,
+      ["SPECIAL"]
+    );
+
+    const parsedQty = Number(
+      (qtyText || "").replace(
+        /[^\d]/g,
+        ""
+      )
+    );
+
+    documents.push({
+      name:
+        type ||
+        `Document ${documentNumberMatch[1]}`,
+
+      booklets:
+        qtyText &&
+        Number.isFinite(parsedQty)
+          ? parsedQty
+          : null,
+
+      serial:
+        serial || undefined,
+
+      paper:
+        paper || undefined,
+
+      ply:
+        ply || undefined,
+
+      size:
+        size || undefined,
+
+      special:
+        special &&
+        special !== "-"
+          ? special
+          : undefined,
+    });
+  }
+
+  return documents;
+}
+
+function extractLegacyDocumentList(
+  desc: string
+): OrderDocument[] {
+  const documentLine = extractField(
+    desc,
+    [
+      "DOCUMENT",
+      "DOCUMENTS",
+      "Document Type",
+    ]
+  );
+
+  const qtyLine = extractField(
+    desc,
+    [
+      "QTY",
+      "Quantity",
+    ]
+  );
+
+  if (!documentLine) {
+    return [];
+  }
+
+  const documentNames =
+    documentLine
+      .split("/")
+      .map((item) =>
+        item.trim()
+      )
+      .filter(Boolean);
+
+  const quantities =
+    qtyLine
+      ? qtyLine
+          .split("/")
+          .map((item) => {
+            const parsed =
+              Number(
+                item.replace(
+                  /[^\d]/g,
+                  ""
+                )
+              );
+
+            return Number.isFinite(
+              parsed
+            )
+              ? parsed
+              : null;
+          })
+      : [];
+
+  return documentNames.map(
+    (name, index) => ({
+      name,
+
+      booklets:
+        quantities[index] ??
+        null,
+    })
+  );
+}
+
+function extractNonBirIntakeDocuments(
+  desc: string
+): OrderDocument[] {
+  const lines = desc
+    .split(/\r?\n/)
+    .map((line) => line.trim());
+
+  const documentsIndex =
+    lines.findIndex(
+      (line) =>
+        line.toUpperCase() ===
+        "DOCUMENTS INCLUDED"
+    );
+
+  if (documentsIndex === -1) {
+    return [];
+  }
+
+  const documents: OrderDocument[] = [];
+
+  let index =
+    documentsIndex + 1;
+
+  while (index < lines.length) {
+    const line = lines[index];
+
+    if (!line) {
+      index++;
+      continue;
+    }
+
+    const documentNumberMatch =
+      line.match(/^(\d+)$/);
+
+    if (!documentNumberMatch) {
+      index++;
+      continue;
+    }
+
+    const sectionLines: string[] = [];
+
+    index++;
+
+    while (index < lines.length) {
+      const current =
+        lines[index].trim();
+
+      if (
+        /^\d+$/.test(current)
+      ) {
+        break;
+      }
+
+      if (
+        [
+          "SALES ASSIGNED",
+          "ORDER TYPE",
+          "PRIORITY",
+          "DELIVERY STRATEGY",
+          "STATUS",
+        ].includes(
+          current.toUpperCase()
+        )
+      ) {
+        break;
+      }
+
+      sectionLines.push(current);
+      index++;
+    }
+
+    const section =
+      sectionLines.join("\n");
+
+    const name =
+      extractField(
+        section,
+        [
+          "Description",
+          "Document",
+          "Type",
+        ]
+      );
+
+    const bookletsText =
+      extractField(
+        section,
+        [
+          "Booklets",
+          "QTY",
+          "Quantity",
+        ]
+      );
+
+    const serial =
+      extractField(
+        section,
+        [
+          "Serial",
+          "Serial Number",
+        ]
+      );
+
+    const parsedBooklets =
+      Number(
+        (bookletsText || "")
+          .replace(/[^\d]/g, "")
+      );
+
+    if (name) {
+      documents.push({
+        name,
+
+        booklets:
+          bookletsText &&
+          Number.isFinite(
+            parsedBooklets
+          )
+            ? parsedBooklets
+            : null,
+
+        serial:
+          serial || undefined,
+      });
+    }
+  }
+
+  return documents;
+}
+
+function extractDocuments(
+  cardName: string,
+  desc: string
+): OrderDocument[] {
+  const structured =
+    extractStructuredDocuments(
+      desc
+    );
+
+  if (structured.length > 0) {
+    return structured;
+  }
+
+  const nonBirIntake =
+    extractNonBirIntakeDocuments(
+      desc
+    );
+
+  if (nonBirIntake.length > 0) {
+    return nonBirIntake;
+  }
+
+  const legacy =
+    extractLegacyDocumentList(
+      desc
+    );
+
+  if (legacy.length > 0) {
+    return legacy;
+  }
+
+  return [];
+}
+
+function getTotalBooklets(
+  documents: OrderDocument[]
+) {
+  return documents.reduce(
+    (total, document) =>
+      total +
+      (document.booklets || 0),
+    0
+  );
+}
+
+async function getListName(
+  idList: string
+) {
   const response = await fetch(
     `https://api.trello.com/1/lists/${idList}?key=${process.env.TRELLO_KEY}&token=${process.env.TRELLO_TOKEN}`,
-    { cache: "no-store" }
+    {
+      cache: "no-store",
+    }
   );
 
   if (!response.ok) {
-    throw new Error("Unable to fetch Trello list.");
+    throw new Error(
+      "Unable to fetch Trello list."
+    );
   }
 
-  const list = await response.json();
+  const list =
+    await response.json();
 
   return list.name;
 }
 
-export async function GET(request: Request) {
+export async function GET(
+  request: Request
+) {
   try {
-    const { searchParams } = new URL(request.url);
-    const q = searchParams.get("q")?.toUpperCase().trim();
+    const { searchParams } =
+      new URL(request.url);
+
+    const q =
+      searchParams
+        .get("q")
+        ?.toUpperCase()
+        .trim();
 
     if (!q) {
       return NextResponse.json(
-        { error: "Please enter your tracking number." },
-        { status: 400 }
+        {
+          error:
+            "Please enter your tracking number.",
+        },
+        {
+          status: 400,
+        }
       );
     }
 
-    const cards = await getBoardCards();
+    const cards =
+      await getBoardCards();
 
-    const card = cards.find((item: any) => {
-      const name = item.name?.toUpperCase() || "";
-      const desc = item.desc?.toUpperCase() || "";
+    const card = cards.find(
+      (item: any) => {
+        const name =
+          item.name
+            ?.toUpperCase() || "";
 
-      return name.includes(q) || desc.includes(q);
-    });
+        const desc =
+          item.desc
+            ?.toUpperCase() || "";
+
+        return (
+          name.includes(q) ||
+          desc.includes(q)
+        );
+      }
+    );
 
     if (!card) {
       return NextResponse.json(
-        { error: "Tracking number not found." },
-        { status: 404 }
+        {
+          error:
+            "Tracking number not found.",
+        },
+        {
+          status: 404,
+        }
       );
     }
 
-    const listName = await getListName(card.idList);
-    const stage = findWorkflowStage(listName);
-    const upperList = listName.toUpperCase();
+    const cardDescription =
+      card.desc || "";
+
+    const listName =
+      await getListName(
+        card.idList
+      );
+
+    const stage =
+      findWorkflowStage(
+        listName
+      );
+
+    const upperList =
+      listName.toUpperCase();
+
+    const documents =
+      extractDocuments(
+        card.name,
+        cardDescription
+      );
+
+    const totalBooklets =
+      getTotalBooklets(
+        documents
+      );
 
     return NextResponse.json({
       success: true,
       multiple: false,
 
-      trackingNumber: extractTrackingNumber(card.name, card.desc || ""),
-      customerName: cleanCustomerName(card.name, card.desc || ""),
-      documentType: extractDocumentType(card.name, card.desc || ""),
-      taxType: extractTaxType(card.name, card.desc || ""),
+      trackingNumber:
+        extractTrackingNumber(
+          card.name,
+          cardDescription
+        ),
 
-      cardName: card.name,
-      currentList: listName,
-      currentStage: stage,
-      currentStatus: getCustomerStatus(listName),
-      nextStage: getNextStage(listName),
-      progress: getProgress(listName),
+      customerName:
+        cleanCustomerName(
+          card.name,
+          cardDescription
+        ),
 
-      courier: extractField(card.desc || "", ["Courier", "Carrier"]),
-      releaseDate: extractField(card.desc || "", [
-        "Release Date",
-        "Pickup Date",
-      ]),
-      dateReceived: card.dateLastActivity,
+      taxType:
+        extractTaxType(
+          card.name,
+          cardDescription
+        ),
+
+      documents,
+
+      documentCount:
+        documents.length,
+
+      totalBooklets,
+
+      cardName:
+        card.name,
+
+      currentList:
+        listName,
+
+      currentStage:
+        stage,
+
+      currentStatus:
+        getCustomerStatus(
+          listName
+        ),
+
+      nextStage:
+        getNextStage(
+          listName
+        ),
+
+      progress:
+        getProgress(
+          listName
+        ),
+
+      courier:
+        extractField(
+          cardDescription,
+          [
+            "Courier",
+            "Carrier",
+          ]
+        ) ||
+        extractNextLineField(
+          cardDescription,
+          [
+            "Courier",
+            "Carrier",
+          ]
+        ),
+
+      releaseDate:
+        extractField(
+          cardDescription,
+          [
+            "Release Date",
+            "Pickup Date",
+          ]
+        ) ||
+        extractNextLineField(
+          cardDescription,
+          [
+            "Release Date",
+            "Pickup Date",
+          ]
+        ),
+
+      dateReceived:
+        card.dateLastActivity,
 
       isReady:
-        upperList.includes("READY FOR RELEASE") ||
-        upperList.includes("DELIVERED BY LIC") ||
-        upperList.includes("PICKED UP BY CLIENT"),
+        upperList.includes(
+          "READY FOR RELEASE"
+        ) ||
+        upperList.includes(
+          "DELIVERED BY LIC"
+        ) ||
+        upperList.includes(
+          "PICKED UP BY CLIENT"
+        ),
 
       isDelivered:
-        upperList.includes("DELIVERED BY LIC") ||
-        upperList.includes("PICKED UP BY CLIENT"),
+        upperList.includes(
+          "DELIVERED BY LIC"
+        ) ||
+        upperList.includes(
+          "PICKED UP BY CLIENT"
+        ),
 
-      isIgnored: isIgnoredList(listName),
+      isIgnored:
+        isIgnoredList(
+          listName
+        ),
     });
   } catch (error: any) {
     return NextResponse.json(
-      { error: error.message || "Something went wrong." },
-      { status: 500 }
+      {
+        error:
+          error.message ||
+          "Something went wrong.",
+      },
+      {
+        status: 500,
+      }
     );
   }
 }

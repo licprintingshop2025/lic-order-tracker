@@ -13,8 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "LIC Printing Shop | Order Tracker",
-  description: "BIR Receipt & Invoice Order Tracker",
+  title: "LIC Printing Corporation | Order Tracker",
+  description:
+    "Track your BIR receipt and invoice printing order with LIC Printing Corporation.",
   icons: {
     icon: [
       {
@@ -37,9 +38,7 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
-        {children}
-      </body>
+      <body className="min-h-full">{children}</body>
     </html>
   );
 }
