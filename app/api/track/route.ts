@@ -354,6 +354,31 @@ function cleanCustomerName(
     .trim();
 }
 
+function extractBranchFromTin(desc: string) {
+  const tin =
+    extractField(desc, ["TIN"]) ||
+    extractNextLineField(desc, ["TIN"]);
+
+  if (!tin) {
+    return null;
+  }
+
+  const match = tin.match(/(\d{5})\s*$/);
+
+  if (!match) {
+    return null;
+  }
+
+  const branchNumber = Number.parseInt(
+    match[1],
+    10
+  );
+
+  return branchNumber > 0
+    ? branchNumber
+    : null;
+}
+
 function extractTaxType(
   cardName: string,
   desc: string
@@ -882,6 +907,11 @@ export async function GET(
       customerName:
         cleanCustomerName(
           card.name,
+          cardDescription
+        ),
+
+      branch:
+        extractBranchFromTin(
           cardDescription
         ),
 

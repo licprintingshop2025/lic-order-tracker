@@ -13,9 +13,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://track.licprintingshop.net"),
+
   title: "LIC Printing Corporation | Order Tracker",
+
   description:
     "Track your BIR receipt and invoice printing order with LIC Printing Corporation.",
+
   icons: {
     icon: [
       {
@@ -25,6 +29,31 @@ export const metadata: Metadata = {
     ],
     shortcut: "/lic-logo.jpg",
     apple: "/lic-logo.jpg",
+  },
+
+  openGraph: {
+    title: "LIC Printing Corporation | Order Tracker",
+    description:
+      "Track your BIR receipt and invoice printing order with LIC Printing Corporation.",
+    url: "https://track.licprintingshop.net",
+    siteName: "LIC Printing Corporation",
+    images: [
+      {
+        url: "/lic-logo.jpg",
+        width: 1576,
+        height: 1600,
+        alt: "LIC Printing Corporation",
+      },
+    ],
+    type: "website",
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "LIC Printing Corporation | Order Tracker",
+    description:
+      "Track your BIR receipt and invoice printing order with LIC Printing Corporation.",
+    images: ["/lic-logo.jpg"],
   },
 };
 

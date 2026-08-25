@@ -69,6 +69,7 @@ type TrackingResult = {
 
   trackingNumber?: string;
   customerName?: string;
+  branch?: number | null;
 
   documents?: OrderDocument[];
   documentCount?: number;
@@ -400,6 +401,12 @@ export default function Home() {
                   <h3 className="mt-2 text-2xl font-black text-[#51321f] sm:text-3xl">
                     {result.customerName || "Order Found"}
                   </h3>
+
+                  {result.branch && (
+                    <p className="mt-1 text-sm font-bold uppercase tracking-[0.14em] text-[#a27a4f]">
+                      Branch {result.branch}
+                    </p>
+                  )}
 
                   <p className="mt-2 text-sm font-semibold tracking-wide text-[#76553c]">
                     {result.trackingNumber}
