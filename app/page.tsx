@@ -277,10 +277,6 @@ export default function Home() {
 
   return (
     <>
-      <Script
-        src="https://elfsightcdn.com/platform.js"
-        strategy="afterInteractive"
-      />
 
       <main className="min-h-screen overflow-hidden bg-[#f8f1e7] text-[#4b2d1a]">
         <section className="tracking-hero">
@@ -724,13 +720,15 @@ export default function Home() {
               ))}
             </div>
 
-            <div className="mt-7 overflow-hidden rounded-[28px] bg-[#fff9ef] px-4 py-7 sm:rounded-[36px] sm:px-7 sm:py-8 xl:px-10">
+            <div className="mt-7 overflow-hidden rounded-[28px] bg-[#fff9ef] px-4 py-5 sm:rounded-[36px] sm:px-7 sm:py-8 xl:px-10">
               <div className="min-h-[390px] sm:min-h-[420px]">
-                <div
-                  className="elfsight-app-603ad0f4-a92f-4e8b-8487-09219a3da948"
-                  data-elfsight-app-lazy
-                />
+                <div id="JFWebsiteWidget-01a046860b6870008ea2ff5a44f01cf1bd15" />
               </div>
+
+              <Script
+                src="https://www.jotform.com/website-widgets/embed/01a046860b6870008ea2ff5a44f01cf1bd15"
+                strategy="afterInteractive"
+              />
             </div>
 
             <div className="mt-9 grid grid-cols-1 gap-6 px-1 text-white sm:px-3 xl:grid-cols-[1fr_auto] xl:items-center">
