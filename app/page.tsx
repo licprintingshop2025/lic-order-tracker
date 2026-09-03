@@ -188,7 +188,8 @@ function TrackingCard({
 export default function Home() {
   const [query, setQuery] = useState("");
   const [lastQuery, setLastQuery] = useState("");
-  const [result, setResult] = useState<TrackingResult | null>(null);
+  const [result, setResult] =
+    useState<TrackingResult | null>(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -217,7 +218,9 @@ export default function Home() {
 
       if (!response.ok) {
         setResult(null);
-        setError(data.error || "Tracking number not found.");
+        setError(
+          data.error || "Tracking number not found."
+        );
       } else {
         setResult(data);
         setLastQuery(value);
@@ -233,7 +236,9 @@ export default function Home() {
       }
     } catch {
       setResult(null);
-      setError("Unable to connect. Please try again.");
+      setError(
+        "Unable to connect. Please try again."
+      );
     } finally {
       setLoading(false);
     }
@@ -249,23 +254,30 @@ export default function Home() {
     return () => clearInterval(interval);
   }, [lastQuery]);
 
-  const isDelivered = result?.isDelivered === true;
+  const isDelivered =
+    result?.isDelivered === true;
 
   const isReadyForRelease =
     result?.currentStatus
       ?.toUpperCase()
-      .includes("READY FOR RELEASE") && !isDelivered;
+      .includes("READY FOR RELEASE") &&
+    !isDelivered;
 
   const phaseIndex = result
-    ? getCustomerPhaseIndex(result.currentList || "")
+    ? getCustomerPhaseIndex(
+        result.currentList || ""
+      )
     : 0;
 
-  const documents = Array.isArray(result?.documents)
+  const documents = Array.isArray(
+    result?.documents
+  )
     ? result.documents
     : [];
 
   const documentCount =
-    result?.documentCount ?? documents.length;
+    result?.documentCount ??
+    documents.length;
 
   const totalBooklets =
     result?.totalBooklets ??
@@ -277,7 +289,6 @@ export default function Home() {
 
   return (
     <>
-
       <main className="min-h-screen overflow-hidden bg-[#f8f1e7] text-[#4b2d1a]">
         <section className="tracking-hero">
           <div className="relative mx-auto max-w-[1280px] px-5 pt-7 sm:px-8 xl:px-8 xl:pt-9">
@@ -287,7 +298,8 @@ export default function Home() {
               </h1>
 
               <p className="mt-1 text-[18px] font-medium tracking-wide text-[#c69a19] sm:text-[25px] xl:text-[30px]">
-                Track Your Invoice &amp; Receipts Order
+                Track Your Invoice &amp; Receipts
+                Order
               </p>
             </div>
 
@@ -305,10 +317,13 @@ export default function Home() {
             <div className="mt-2 xl:hidden">
               <div className="mobile-description-general">
                 <p>
-                  Monitor the progress of your receipt and invoice
-                  printing order in real time through{" "}
-                  <strong>LIC Printing Corporation</strong> secure
-                  customer portal.
+                  Monitor the progress of your receipt
+                  and invoice printing order in real
+                  time through{" "}
+                  <strong>
+                    LIC Printing Corporation
+                  </strong>{" "}
+                  secure customer portal.
                 </p>
               </div>
 
@@ -331,11 +346,15 @@ export default function Home() {
               <div className="relative min-h-[630px]">
                 <div className="absolute left-[11%] right-[-5%] top-[140px] z-[4] flex min-h-[200px] items-center bg-white px-8">
                   <p className="ml-auto max-w-[420px] text-center font-serif text-[22px] leading-[1.28] text-[#18110d]">
-                    Monitor the progress of your receipt and
+                    Monitor the progress of your
+                    receipt and
                     <br />
-                    invoice printing order in real time through
+                    invoice printing order in real time
+                    through
                     <br />
-                    <strong>LIC Printing Corporation</strong>
+                    <strong>
+                      LIC Printing Corporation
+                    </strong>
                     <br />
                     secure customer portal.
                   </p>
@@ -395,7 +414,8 @@ export default function Home() {
                   </p>
 
                   <h3 className="mt-2 text-2xl font-black text-[#51321f] sm:text-3xl">
-                    {result.customerName || "Order Found"}
+                    {result.customerName ||
+                      "Order Found"}
                   </h3>
 
                   {result.branch && (
@@ -422,7 +442,8 @@ export default function Home() {
                         </p>
 
                         <p className="mt-1 text-sm text-[#7a6658]">
-                          Documents included in this printing order.
+                          Documents included in this
+                          printing order.
                         </p>
                       </div>
 
@@ -446,44 +467,50 @@ export default function Home() {
                     </div>
 
                     <div className="mt-4 overflow-hidden rounded-[24px] border border-[#dfd3c8] bg-[#fffdf9]">
-                      {documents.map((document, index) => (
-                        <div
-                          key={`${document.name}-${index}`}
-                          className="grid grid-cols-[1fr_auto] items-center gap-5 border-b border-[#ebe3dc] px-5 py-4 last:border-b-0 sm:px-6 sm:py-5"
-                        >
-                          <div className="min-w-0">
-                            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#a38d7d]">
-                              Document {index + 1}
-                            </p>
-
-                            <p className="mt-1 text-base font-black leading-tight text-[#52321f] sm:text-lg">
-                              {document.name}
-                            </p>
-                          </div>
-
-                          <div className="min-w-[105px] text-right sm:min-w-[140px]">
-                            <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#a38d7d]">
-                              Quantity
-                            </p>
-
-                            {document.booklets !== null ? (
-                              <p className="mt-1 text-xl font-black text-[#5a3823]">
-                                {document.booklets}
-
-                                <span className="ml-1 text-xs font-semibold text-[#7a6658] sm:text-sm">
-                                  {document.booklets === 1
-                                    ? "booklet"
-                                    : "booklets"}
-                                </span>
+                      {documents.map(
+                        (document, index) => (
+                          <div
+                            key={`${document.name}-${index}`}
+                            className="grid grid-cols-[1fr_auto] items-center gap-5 border-b border-[#ebe3dc] px-5 py-4 last:border-b-0 sm:px-6 sm:py-5"
+                          >
+                            <div className="min-w-0">
+                              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#a38d7d]">
+                                Document {index + 1}
                               </p>
-                            ) : (
-                              <p className="mt-1 text-sm font-semibold text-[#9a806c]">
-                                Not specified
+
+                              <p className="mt-1 text-base font-black leading-tight text-[#52321f] sm:text-lg">
+                                {document.name}
                               </p>
-                            )}
+                            </div>
+
+                            <div className="min-w-[105px] text-right sm:min-w-[140px]">
+                              <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#a38d7d]">
+                                Quantity
+                              </p>
+
+                              {document.booklets !==
+                              null ? (
+                                <p className="mt-1 text-xl font-black text-[#5a3823]">
+                                  {
+                                    document.booklets
+                                  }
+
+                                  <span className="ml-1 text-xs font-semibold text-[#7a6658] sm:text-sm">
+                                    {document.booklets ===
+                                    1
+                                      ? "booklet"
+                                      : "booklets"}
+                                  </span>
+                                </p>
+                              ) : (
+                                <p className="mt-1 text-sm font-semibold text-[#9a806c]">
+                                  Not specified
+                                </p>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        )
+                      )}
                     </div>
                   </div>
                 )}
@@ -499,8 +526,9 @@ export default function Home() {
                     </p>
 
                     <p className="mt-1 text-sm leading-5 text-amber-800">
-                      Please contact LIC Printing Corporation for
-                      pickup or release arrangements.
+                      Please contact LIC Printing
+                      Corporation for pickup or release
+                      arrangements.
                     </p>
                   </div>
                 )}
@@ -512,7 +540,8 @@ export default function Home() {
                     </p>
 
                     <p className="mt-1 text-sm leading-5 text-green-700">
-                      Thank you for choosing LIC Printing Corporation.
+                      Thank you for choosing LIC
+                      Printing Corporation.
                     </p>
                   </div>
                 )}
@@ -549,7 +578,9 @@ export default function Home() {
                       }`}
                       style={{
                         width: `${Math.min(
-                          Number(result.progress) || 0,
+                          Number(
+                            result.progress
+                          ) || 0,
                           100
                         )}%`,
                       }}
@@ -567,53 +598,70 @@ export default function Home() {
                   </p>
 
                   <div className="mx-auto flex items-start">
-                    {trackingSteps.map((step, index) => {
-                      const isDone = isDelivered
-                        ? index <= phaseIndex
-                        : index < phaseIndex;
+                    {trackingSteps.map(
+                      (step, index) => {
+                        const isReadyStage =
+                          index === 4 &&
+                          phaseIndex === 4;
 
-                      const isCurrent =
-                        index === phaseIndex && !isDelivered;
+                        const isDone =
+                          isDelivered
+                            ? index <= phaseIndex
+                            : index < phaseIndex ||
+                              isReadyStage;
 
-                      return (
-                        <div
-                          key={step}
-                          className="relative flex flex-1 flex-col items-center"
-                        >
-                          {index < trackingSteps.length - 1 && (
-                            <div
-                              className={`absolute left-1/2 top-[17px] h-[3px] w-full ${
-                                index < phaseIndex || isDelivered
-                                  ? "bg-green-600"
-                                  : "bg-[#dfd8d1]"
-                              }`}
-                            />
-                          )}
+                        const isCurrent =
+                          index === phaseIndex &&
+                          !isDelivered &&
+                          !isReadyStage;
 
+                        return (
                           <div
-                            className={`relative z-10 flex h-9 w-9 items-center justify-center rounded-full border-2 text-xs font-bold ${
-                              isDone
-                                ? "border-green-600 bg-green-600 text-white"
-                                : isCurrent
-                                  ? "border-[#b88c32] bg-[#fff5d8] text-[#5a3823]"
-                                  : "border-[#d6cec7] bg-white text-[#aaa29b]"
-                            }`}
+                            key={step}
+                            className="relative flex flex-1 flex-col items-center"
                           >
-                            {isDone ? "✓" : index + 1}
-                          </div>
+                            {index <
+                              trackingSteps.length -
+                                1 && (
+                              <div
+                                className={`absolute left-1/2 top-[17px] h-[3px] w-full ${
+                                  index <
+                                    phaseIndex ||
+                                  isDelivered
+                                    ? "bg-green-600"
+                                    : "bg-[#dfd8d1]"
+                                }`}
+                              />
+                            )}
 
-                          <p
-                            className={`mt-3 max-w-[115px] px-1 text-center text-[10px] font-semibold leading-[1.3] ${
-                              isDone || isCurrent
-                                ? "text-[#503422]"
-                                : "text-[#aaa29b]"
-                            }`}
-                          >
-                            {step}
-                          </p>
-                        </div>
-                      );
-                    })}
+                            <div
+                              className={`relative z-10 flex h-9 w-9 items-center justify-center rounded-full border-2 text-xs font-bold ${
+                                isDone
+                                  ? "border-green-600 bg-green-600 text-white"
+                                  : isCurrent
+                                    ? "border-[#b88c32] bg-[#fff5d8] text-[#5a3823]"
+                                    : "border-[#d6cec7] bg-white text-[#aaa29b]"
+                              }`}
+                            >
+                              {isDone
+                                ? "✓"
+                                : index + 1}
+                            </div>
+
+                            <p
+                              className={`mt-3 max-w-[115px] px-1 text-center text-[10px] font-semibold leading-[1.3] ${
+                                isDone ||
+                                isCurrent
+                                  ? "text-[#503422]"
+                                  : "text-[#aaa29b]"
+                              }`}
+                            >
+                              {step}
+                            </p>
+                          </div>
+                        );
+                      }
+                    )}
                   </div>
                 </div>
 
@@ -626,49 +674,62 @@ export default function Home() {
                     Order Progress
                   </p>
 
-                  {trackingSteps.map((step, index) => {
-                    const isDone = isDelivered
-                      ? index <= phaseIndex
-                      : index < phaseIndex;
+                  {trackingSteps.map(
+                    (step, index) => {
+                      const isReadyStage =
+                        index === 4 &&
+                        phaseIndex === 4;
 
-                    const isCurrent =
-                      index === phaseIndex && !isDelivered;
+                      const isDone =
+                        isDelivered
+                          ? index <= phaseIndex
+                          : index < phaseIndex ||
+                            isReadyStage;
 
-                    return (
-                      <div
-                        key={step}
-                        className={`flex items-center gap-3 rounded-xl border px-3 py-3 ${
-                          isDone
-                            ? "border-green-200 bg-green-50"
-                            : isCurrent
-                              ? "border-[#cfad55] bg-[#fff8e7]"
-                              : "border-[#e0d9d2] bg-white"
-                        }`}
-                      >
+                      const isCurrent =
+                        index === phaseIndex &&
+                        !isDelivered &&
+                        !isReadyStage;
+
+                      return (
                         <div
-                          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
+                          key={step}
+                          className={`flex items-center gap-3 rounded-xl border px-3 py-3 ${
                             isDone
-                              ? "bg-green-600 text-white"
+                              ? "border-green-200 bg-green-50"
                               : isCurrent
-                                ? "bg-[#b88929] text-white"
-                                : "bg-[#ebe7e2] text-[#999]"
+                                ? "border-[#cfad55] bg-[#fff8e7]"
+                                : "border-[#e0d9d2] bg-white"
                           }`}
                         >
-                          {isDone ? "✓" : index + 1}
-                        </div>
+                          <div
+                            className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
+                              isDone
+                                ? "bg-green-600 text-white"
+                                : isCurrent
+                                  ? "bg-[#b88929] text-white"
+                                  : "bg-[#ebe7e2] text-[#999]"
+                            }`}
+                          >
+                            {isDone
+                              ? "✓"
+                              : index + 1}
+                          </div>
 
-                        <p
-                          className={`text-sm font-semibold ${
-                            isDone || isCurrent
-                              ? "text-[#503422]"
-                              : "text-[#a29b95]"
-                          }`}
-                        >
-                          {step}
-                        </p>
-                      </div>
-                    );
-                  })}
+                          <p
+                            className={`text-sm font-semibold ${
+                              isDone ||
+                              isCurrent
+                                ? "text-[#503422]"
+                                : "text-[#a29b95]"
+                            }`}
+                          >
+                            {step}
+                          </p>
+                        </div>
+                      );
+                    }
+                  )}
                 </div>
               </div>
             </div>
@@ -685,12 +746,14 @@ export default function Home() {
               {[
                 {
                   number: "01",
-                  title: "Enter Tracking Number",
+                  title:
+                    "Enter Tracking Number",
                   text: "Use the unique tracking number provided by LIC Printing Corporation.",
                 },
                 {
                   number: "02",
-                  title: "View Production Status",
+                  title:
+                    "View Production Status",
                   text: "Monitor your order as it moves through production.",
                 },
                 {
@@ -720,8 +783,9 @@ export default function Home() {
               ))}
             </div>
 
-            <div className="mt-7 overflow-hidden rounded-[28px] bg-[#fff9ef] px-4 py-5 sm:rounded-[36px] sm:px-7 sm:py-8 xl:px-10">
-              <div className="min-h-[390px] sm:min-h-[420px]">
+            <div className="mt-7 overflow-hidden rounded-[28px] bg-[#fff9ef] px-4 py-7 sm:rounded-[36px] sm:px-7 sm:py-8 xl:px-10">
+             
+              <div className="jotform-reviews-widget">
                 <div id="JFWebsiteWidget-01a046860b6870008ea2ff5a44f01cf1bd15" />
               </div>
 
@@ -738,8 +802,9 @@ export default function Home() {
                 </h3>
 
                 <p className="mt-1 text-sm text-white/85 sm:text-base">
-                  For pickup schedules, release arrangements, and
-                  order inquiries, our team is ready to assist.
+                  For pickup schedules, release
+                  arrangements, and order inquiries,
+                  our team is ready to assist.
                 </p>
               </div>
 
@@ -755,7 +820,9 @@ export default function Home() {
                   className="h-[30px] w-[30px] object-contain"
                 />
 
-                <span>+63 943 416 4978 (Viber)</span>
+                <span>
+                  +63 943 416 4978 (Viber)
+                </span>
               </a>
             </div>
 

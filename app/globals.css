@@ -168,7 +168,6 @@ input {
   line-height: 1.45;
 }
 
-
 /* =========================================================
    ORDER RESULT SECTION
 ========================================================= */
@@ -177,13 +176,7 @@ input {
   position: relative;
   z-index: 15;
 
-  background: linear-gradient(
-    to bottom,
-    #f8f1e7 0%,
-    #f5ede3 14%,
-    #f3eadf 30%,
-    #f3eadf 100%
-  );
+  background: #f8f1e7;
 
   padding-top: 70px;
   padding-bottom: 40px;
@@ -205,6 +198,8 @@ input {
   .order-result-section {
     padding-top: 70px;
     padding-bottom: 85px;
+
+    background: #f8f1e7;
   }
 }
 
@@ -213,30 +208,12 @@ input {
     padding-top: 24px;
     padding-bottom: 35px;
 
-    background: linear-gradient(
-      to bottom,
-      #f8f1e7 0%,
-      #f5ede3 18%,
-      #f3eadf 38%,
-      #f3eadf 100%
-    );
-  }
-}
-
-.order-result-container {
-  width: 100%;
-  max-width: 980px;
-  margin-inline: auto;
-}
-
-@media (min-width: 1280px) {
-  .order-result-container {
-    max-width: 1350px;
+    background: #f8f1e7;
   }
 }
 
 /* =========================================================
-   BROWN TEXTURE SECTION
+   PLAIN BROWN SECTION
 ========================================================= */
 
 .texture-section {
@@ -254,7 +231,7 @@ input {
 }
 
 /* =========================================================
-   DESKTOP BROWN PAPER
+   DESKTOP PLAIN BROWN WAVE
 ========================================================= */
 
 .texture-section::before {
@@ -266,87 +243,9 @@ input {
 
   z-index: 1;
 
-  background-color: #8b6039;
+  background: #68492d;
 
-  background-image:
-    radial-gradient(
-      circle at 10% 13%,
-      rgba(39, 20, 10, 0.14) 0,
-      rgba(39, 20, 10, 0.14) 0.8px,
-      transparent 1.7px
-    ),
-    radial-gradient(
-      circle at 63% 27%,
-      rgba(255, 235, 202, 0.075) 0,
-      rgba(255, 235, 202, 0.075) 0.9px,
-      transparent 1.8px
-    ),
-    radial-gradient(
-      circle at 26% 75%,
-      rgba(50, 25, 12, 0.12) 0,
-      rgba(50, 25, 12, 0.12) 1px,
-      transparent 2px
-    ),
-    radial-gradient(
-      circle at 82% 63%,
-      rgba(255, 236, 209, 0.055) 0,
-      rgba(255, 236, 209, 0.055) 1.1px,
-      transparent 2px
-    ),
-    radial-gradient(
-      ellipse at 35% 40%,
-      rgba(48, 24, 12, 0.06) 0,
-      transparent 45%
-    ),
-    radial-gradient(
-      ellipse at 70% 75%,
-      rgba(255, 231, 196, 0.035) 0,
-      transparent 38%
-    ),
-    repeating-linear-gradient(
-      18deg,
-      rgba(255, 255, 255, 0.016) 0,
-      rgba(255, 255, 255, 0.016) 1px,
-      transparent 1px,
-      transparent 4px
-    ),
-    repeating-linear-gradient(
-      103deg,
-      rgba(42, 22, 11, 0.024) 0,
-      rgba(42, 22, 11, 0.024) 1px,
-      transparent 1px,
-      transparent 5px
-    ),
-    linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.025) 0%,
-      transparent 35%,
-      rgba(48, 25, 12, 0.045) 100%
-    );
-
-  background-size:
-    7px 7px,
-    11px 11px,
-    15px 15px,
-    19px 19px,
-    110px 95px,
-    145px 125px,
-    100% 100%,
-    100% 100%,
-    100% 100%;
-
-  background-position:
-    0 0,
-    3px 4px,
-    6px 8px,
-    10px 2px,
-    0 0,
-    30px 40px,
-    center,
-    center,
-    center;
-
-clip-path: polygon(
+  clip-path: polygon(
     0% 150px,
     4% 142px,
     8% 134px,
@@ -468,84 +367,11 @@ clip-path: polygon(
   .texture-section {
     z-index: 10;
 
-    /*
-     * IMPORTANT:
-     * No negative margin here.
-     * This prevents the wave from covering
-     * the tracking card border.
-     */
     margin-top: 0;
 
     min-height: 1250px;
 
-    background-color: #8b6039;
-
-    background-image:
-      radial-gradient(
-        circle at 10% 13%,
-        rgba(39, 20, 10, 0.14) 0,
-        rgba(39, 20, 10, 0.14) 0.8px,
-        transparent 1.7px
-      ),
-      radial-gradient(
-        circle at 63% 27%,
-        rgba(255, 235, 202, 0.075) 0,
-        rgba(255, 235, 202, 0.075) 0.9px,
-        transparent 1.8px
-      ),
-      radial-gradient(
-        circle at 26% 75%,
-        rgba(50, 25, 12, 0.12) 0,
-        rgba(50, 25, 12, 0.12) 1px,
-        transparent 2px
-      ),
-      radial-gradient(
-        circle at 82% 63%,
-        rgba(255, 236, 209, 0.055) 0,
-        rgba(255, 236, 209, 0.055) 1.1px,
-        transparent 2px
-      ),
-      radial-gradient(
-        ellipse at 35% 40%,
-        rgba(48, 24, 12, 0.06) 0,
-        transparent 45%
-      ),
-      radial-gradient(
-        ellipse at 70% 75%,
-        rgba(255, 231, 196, 0.035) 0,
-        transparent 38%
-      ),
-      repeating-linear-gradient(
-        18deg,
-        rgba(255, 255, 255, 0.016) 0,
-        rgba(255, 255, 255, 0.016) 1px,
-        transparent 1px,
-        transparent 4px
-      ),
-      repeating-linear-gradient(
-        103deg,
-        rgba(42, 22, 11, 0.024) 0,
-        rgba(42, 22, 11, 0.024) 1px,
-        transparent 1px,
-        transparent 5px
-      ),
-      linear-gradient(
-        135deg,
-        rgba(255, 255, 255, 0.025) 0%,
-        transparent 35%,
-        rgba(48, 25, 12, 0.045) 100%
-      );
-
-    background-size:
-      7px 7px,
-      10px 10px,
-      14px 14px,
-      18px 18px,
-      100px 90px,
-      130px 115px,
-      100% 100%,
-      100% 100%,
-      100% 100%;
+    background: #68492d;
   }
 
   .texture-section::before {
@@ -562,7 +388,6 @@ clip-path: polygon(
     z-index: 2;
 
     background: #f8f1e7;
-    background-image: none;
 
     clip-path: polygon(
       0% 0%,
@@ -651,6 +476,8 @@ clip-path: polygon(
   .order-result-section {
     padding-top: 24px;
     padding-bottom: 35px;
+
+    background: #f8f1e7;
   }
 
   .texture-section {
@@ -658,82 +485,11 @@ clip-path: polygon(
 
     z-index: 10;
 
-    /*
-     * This is the important fix.
-     * The texture no longer overlaps the card.
-     */
     margin-top: 0;
 
     min-height: 1400px;
 
-    background-color: #8b6039;
-
-    background-image:
-      radial-gradient(
-        circle at 10% 13%,
-        rgba(39, 20, 10, 0.14) 0,
-        rgba(39, 20, 10, 0.14) 0.8px,
-        transparent 1.7px
-      ),
-      radial-gradient(
-        circle at 63% 27%,
-        rgba(255, 235, 202, 0.075) 0,
-        rgba(255, 235, 202, 0.075) 0.9px,
-        transparent 1.8px
-      ),
-      radial-gradient(
-        circle at 26% 75%,
-        rgba(50, 25, 12, 0.12) 0,
-        rgba(50, 25, 12, 0.12) 1px,
-        transparent 2px
-      ),
-      radial-gradient(
-        circle at 82% 63%,
-        rgba(255, 236, 209, 0.055) 0,
-        rgba(255, 236, 209, 0.055) 1.1px,
-        transparent 2px
-      ),
-      radial-gradient(
-        ellipse at 35% 40%,
-        rgba(48, 24, 12, 0.06) 0,
-        transparent 45%
-      ),
-      radial-gradient(
-        ellipse at 70% 75%,
-        rgba(255, 231, 196, 0.035) 0,
-        transparent 38%
-      ),
-      repeating-linear-gradient(
-        18deg,
-        rgba(255, 255, 255, 0.016) 0,
-        rgba(255, 255, 255, 0.016) 1px,
-        transparent 1px,
-        transparent 4px
-      ),
-      repeating-linear-gradient(
-        103deg,
-        rgba(42, 22, 11, 0.024) 0,
-        rgba(42, 22, 11, 0.024) 1px,
-        transparent 1px,
-        transparent 5px
-      ),
-      linear-gradient(
-        135deg,
-        rgba(255, 255, 255, 0.025) 0%,
-        transparent 35%,
-        rgba(48, 25, 12, 0.045) 100%
-      );
-
-    background-size:
-      6px 6px,
-      9px 9px,
-      12px 12px,
-      16px 16px,
-      85px 75px,
-      110px 95px,
-      100% 100%,
-      100% 100%,
-      100% 100%;
+    background: #68492d;
   }
 
   .texture-section::before {
@@ -750,7 +506,6 @@ clip-path: polygon(
     z-index: 2;
 
     background: #f8f1e7;
-    background-image: none;
 
     clip-path: polygon(
       0% 0%,
